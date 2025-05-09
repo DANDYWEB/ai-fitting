@@ -1,7 +1,8 @@
 [build]
-  publish   = "public"
-  functions = "netlify/functions"
+  publish   = "public"            # 정적 자산
+  functions = "netlify/functions" # 서버리스 함수
+  command   = "node scripts/gen-clothes-json.js"
 
 [functions]
   node_bundler   = "esbuild"
-  included_files = ["public/clothes/**"]   # ← 추가
+  included_files = ["public/clothes/**"]   # 의류 이미지를 Functions ZIP에 포함
