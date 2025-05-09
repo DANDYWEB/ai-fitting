@@ -106,8 +106,19 @@ function reset(msg){
 
 /* ------------- Poll ------------- */
 async function poll(id,n){
-  const d=await fetch(`${FN}/task?id=${id}`).then(r=>r.json());
-  if(d.task_status==="succeed"){
+  const res = await fetch(`${FN}/task?id=${id}`);
+
+  if(!res.ok){
+    reset("Task 조회 실패 "+res.status); return;
+  }
+  const d = await res.json();        // ← d 가 null 일 수도 있으므로 검사
+
+  if(!d || !d.task_status){
+    if(n < 40){ setTimeout(()=>poll(id, n+1), 8000); return; }
+    reset("결과를 가져오지 못했습니다"); return;
+  }
+
+  if(d.task_status === "succeed"){
     const url=d.task_result.images[0].url;
     box.innerHTML=`<img src="${url}">`;
     reset(); return;
