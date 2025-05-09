@@ -1,50 +1,66 @@
-/*
-  GET /.netlify/functions/task?id=TASK_ID
-    → Kling 작업 상태 조회 + 이미지 URL 표준화
-*/
-const jwt = require("jsonwebtoken");
-const fetch = (...a) =>
-  import("node-fetch").then(({ default: f }) => f(...a));
+const jwt   = require("jsonwebtoken");
+const fetch = (...args) => import("node-fetch").then(({default:f})=>f(...args));
 
 const AK = process.env.ACCESS_KEY;
 const SK = process.env.SECRET_KEY;
 
 exports.handler = async (event) => {
-  const id = event.queryStringParameters.id;
-  if (!id) return { statusCode: 400, body: "id param required" };
+  // CORS preflight
+  if (event.httpMethod === "OPTIONS") {
+    return {
+      statusCode: 200,
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET,OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type",
+      },
+      body: ""
+    };
+  }
 
-  /* JWT */
+  if (event.httpMethod !== "GET") {
+    return {
+      statusCode: 405,
+      headers: { "Access-Control-Allow-Origin": "*" },
+      body: "Method Not Allowed"
+    };
+  }
+
+  const id = event.queryStringParameters?.id;
+  if (!id) {
+    return {
+      statusCode: 400,
+      headers: { "Access-Control-Allow-Origin": "*" },
+      body: "id param required"
+    };
+  }
+
   const token = jwt.sign(
-    { iss: AK, exp: Math.floor(Date.now() / 1000) + 1800 },
-    SK,
-    { algorithm: "HS256" }
+    { iss: AK, exp: Math.floor(Date.now()/1000)+1800 },
+    SK, { algorithm: "HS256" }
   );
 
-  /* Kling Task 조회 */
   const resp = await fetch(
     `https://api.klingai.com/v1/images/kolors-virtual-try-on/${id}`,
     { headers: { Authorization: `Bearer ${token}` } }
   );
-  const api = await resp.json();
+  const api  = await resp.json();
   const data = api.data || api;
 
-  /* ── 이미지 URL 표준화 ── */
+  // 표준화된 URL 추출
   const imageUrl =
-    data.result_url ||
-    data.image_url ||
-    data.task_result?.result_url ||
-    data.task_result?.images?.[0]?.url ||
-    null;
+       data.image_url
+    || data.result_url
+    || data.task_result?.images?.[0]?.url
+    || null;
 
-return {
-  statusCode: 200,
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify({
-    task_status : data.task_status || data.status,
-    /* 지금까지 추출한 후보들 ↓ */
-    image_url   : imageUrl,
-    /* ───── 디버깅용으로 원본 전체를 보낸다 ───── */
-    raw         : data
-  })
-};
+  return {
+    statusCode: 200,
+    headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
+    body: JSON.stringify({
+      task_status: data.task_status || data.status,
+      image_url: imageUrl,
+      raw: data
+    })
+  };
 };
