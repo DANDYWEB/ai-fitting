@@ -1,6 +1,7 @@
 [build]
-  publish   = "public"            # 정적 자산
-  functions = "netlify/functions" # 서버리스 함수
+  publish   = "public"
+  functions = "netlify/functions"
 
 [functions]
-  node_bundler = "esbuild"        # 의존 모듈 자동 번들
+  node_bundler   = "esbuild"
+  included_files = ["public/clothes/**"]   # ← 추가
