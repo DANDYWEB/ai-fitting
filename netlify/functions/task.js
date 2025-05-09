@@ -36,14 +36,15 @@ exports.handler = async (event) => {
     data.task_result?.images?.[0]?.url ||
     null;
 
-  return {
-    statusCode: 200,
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      task_status: data.task_status || data.status,
-      image_url: imageUrl,
-      created_at: data.created_at,
-      updated_at: data.updated_at,
-    }),
-  };
+return {
+  statusCode: 200,
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({
+    task_status : data.task_status || data.status,
+    /* 지금까지 추출한 후보들 ↓ */
+    image_url   : imageUrl,
+    /* ───── 디버깅용으로 원본 전체를 보낸다 ───── */
+    raw         : data
+  })
+};
 };
