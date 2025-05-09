@@ -1,0 +1,6 @@
+[build]
+  publish   = "public"            # 정적 자산
+  functions = "netlify/functions" # 서버리스 함수
+
+[functions]
+  node_bundler = "esbuild"        # 의존 모듈 자동 번들

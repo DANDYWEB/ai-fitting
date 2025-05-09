@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Fitting Room</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="dark">
+  <header><h1><span class="accent">AI</span> Fitting Room</h1></header>
+
+  <main class="workspace">
+    <aside class="side-panel">
+      <section class="card">
+        <h2>① 인물 사진 업로드</h2>
+        <input type="file" id="personPhoto" accept="image/*">
+        <div id="photoPreview" class="preview-box"></div>
+      </section>
+
+      <section class="card">
+        <h2>② 의류 선택</h2>
+        <ul id="categoryTabs" class="tabs">
+          <li data-cat="all" class="active">All Items</li>
+          <li data-cat="top">Tops</li>
+          <li data-cat="pants">Pants</li>
+          <li data-cat="dress">Dress</li>
+        </ul>
+        <div id="clothingGrid" class="grid-clothes"></div>
+      </section>
+
+      <button id="generateBtn" disabled>Generate Image</button>
+    </aside>
+
+    <section class="result-panel card">
+      <h2>③ 결과 미리보기</h2>
+      <div id="resultBox" class="result-box">
+        <p class="placeholder">완성 결과가 여기에 표시됩니다.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer><small>&copy; 2025 DandyWeb.</small></footer>
+
+  <script type="module" src="script.js"></script>
+</body>
+</html>
