@@ -44,4 +44,38 @@ button:not(:disabled):hover{filter:brightness(1.15)}
 .result-box img{width:100%;border-radius:var(--radius)}
 .placeholder{color:var(--txt-300)}
 footer{text-align:center;padding:12px 0 20px;font-size:.8rem;color:var(--txt-300)}
-@media(max-width:800px){.workspace{flex-direction:column}.result-panel{flex:auto}.grid-clothes {grid-template-columns: repeat(2, 1fr);}}
+@media(max-width:800px){.workspace{flex-direction:column}.result-panel{flex:auto}}
+
+/* 360px 이하 모바일 대응 */
+@media (max-width: 360px) {
+  /* 전체 워크스페이스 여백·간격 축소 */
+  .workspace {
+    padding: 16px 8px;
+    gap: 12px;
+  }
+
+  /* 사이드·결과 패널을 100% 너비로 변경 */
+  .side-panel,
+  .result-panel {
+    flex: 1 1 100%;
+    min-width: auto;
+  }
+
+  /* 탭·그리드 영역 크기 조정 */
+  .tabs { gap: 8px; }
+  .grid-clothes {
+    max-height: 200px;
+  }
+
+  /* 결과 박스 최소 높이 조정 */
+  .result-box {
+    min-height: 180px;
+  }
+
+  /* 버튼 여백 조정 */
+  button {
+    padding: 12px 0;
+    font-size: 0.9rem;
+  }
+.grid-clothes {grid-template-columns: repeat(2, 1fr);}  
+}
