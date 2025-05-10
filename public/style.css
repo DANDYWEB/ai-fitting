@@ -58,7 +58,8 @@ footer{text-align:center;padding:12px 0 20px;font-size:.8rem;color:var(--txt-300
   .side-panel,
   .result-panel {
     flex: 1 1 100%;
-    width: 80%;
+    width: 90%;
+    margin: 0 auto;
   }
 
   /* 탭·그리드 영역 크기 조정 */
