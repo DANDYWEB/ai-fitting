@@ -58,7 +58,7 @@ footer{text-align:center;padding:12px 0 20px;font-size:.8rem;color:var(--txt-300
   .side-panel,
   .result-panel {
     flex: 1 1 100%;
-    width: 90%;
+    width: 95%;
     margin: 0 auto;
   }
 
