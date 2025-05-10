@@ -63,9 +63,9 @@ const imgToBase64 = u => fetch(u).then(r => r.blob()).then(b =>
   new Promise(res => { const fr=new FileReader(); fr.onloadend=()=>res(fr.result.split(',')[1]); fr.readAsDataURL(b); })
 );
 
-// compress & resize person image to ≤ 800px & JPEG 0.7
+
 /**
- * 최대 가로·세로 1270px, 원본 포맷 유지하여 Base64 리턴
+ * 최대 가로·세로 1280px, 원본 포맷 유지하여 Base64 리턴
  * @param {File} file - input[type=file] 으로 받은 이미지 파일
  * @returns {Promise<string>} - Base64 문자열(“data:…,XXX…” 의 “,” 뒤)
  */
@@ -73,7 +73,7 @@ function fileToBase64Compressed(file) {
   return new Promise(res => {
     const img = new Image();
     img.onload = () => {
-      const MAX = 1270;
+      const MAX = 1280;
       const origW = img.width;
       const origH = img.height;
       // 축소 비율 계산 (1 이하면 축소, 아니면 원본크기)
