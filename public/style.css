@@ -52,21 +52,18 @@ footer{text-align:center;padding:12px 0 20px;font-size:.8rem;color:var(--txt-300
   .workspace {
     padding: 16px 8px;
     gap: 12px;
-    width: 80%;
   }
 
   /* 사이드·결과 패널을 100% 너비로 변경 */
   .side-panel,
   .result-panel {
     flex: 1 1 100%;
-    min-width: auto;
+    width: 80%;
   }
 
   /* 탭·그리드 영역 크기 조정 */
   .tabs { gap: 8px; }
-  .grid-clothes {
-    max-height: 200px;
-  }
+  
 
   /* 결과 박스 최소 높이 조정 */
   .result-box {
