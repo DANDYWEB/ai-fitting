@@ -44,4 +44,4 @@ button:not(:disabled):hover{filter:brightness(1.15)}
 .result-box img{width:100%;border-radius:var(--radius)}
 .placeholder{color:var(--txt-300)}
 footer{text-align:center;padding:12px 0 20px;font-size:.8rem;color:var(--txt-300)}
-@media(max-width:800px){.workspace{flex-direction:column}.result-panel{flex:auto}}
+@media(max-width:800px){.workspace{flex-direction:column}.result-panel{flex:auto}.grid-clothes {grid-template-columns: repeat(2, 1fr);}}
