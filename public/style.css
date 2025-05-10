@@ -34,30 +34,29 @@ header .accent {
   color: var(--accent);
 }
 
-/* ────────── 메인 레이아웃 (wrapper) ────────── */
+/* ────────── 메인 레이아웃 ────────── */
 .workspace {
   flex: 1;
   display: flex;
   flex-wrap: wrap;
-  gap: 40px;             /* 자식 간격을 40px로 늘림 */
-  padding: 32px 24px;
-  max-width: 1400px;     /* 최대 1400px 너비 */
-  margin: 0 auto;        /* 가로 중앙 정렬 */
+  gap: 40px;             /* PC간격 */
+  padding: 32px 24px;    /* PC패딩 */
+  max-width: 1400px;
+  margin: 0 auto;
 }
-
 .side-panel {
   flex: 1 0 340px;
   display: flex;
   flex-direction: column;
   gap: 24px;
 }
-
 .result-panel {
   flex: 2 1 480px;
   display: flex;
   flex-direction: column;
 }
 
+/* ────────── 카드 & 공통 ────────── */
 .card {
   background: var(--bg-card);
   padding: 24px;
@@ -92,9 +91,7 @@ header .accent {
   overflow-x: auto;
   scrollbar-width: none;
 }
-.tabs::-webkit-scrollbar {
-  display: none;
-}
+.tabs::-webkit-scrollbar { display: none }
 .tabs li {
   list-style: none;
   padding: 6px 14px;
@@ -111,17 +108,15 @@ header .accent {
   border-color: var(--accent);
 }
 
-/* ────────── 의류 그리드 높이 제한 ────────── */
+/* 의류 그리드 */
 .grid-clothes {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(95px,1fr));
   gap: 12px;
-  max-height: 600px;      /* 최대 높이 600px */
+  max-height: 600px;      /* PC 최대 600px */
   overflow-y: auto;
   padding-right: 4px;
 }
-
-/* 스크롤바 스타일 */
 .grid-clothes::-webkit-scrollbar {
   width: 6px;
 }
@@ -129,7 +124,6 @@ header .accent {
   background: var(--accent);
   border-radius: 3px;
 }
-
 .clothing-item {
   border: 2px solid transparent;
   border-radius: var(--radius);
@@ -192,8 +186,8 @@ button:not(:disabled):hover {
   border: 2px dashed var(--accent);
   border-radius: var(--radius);
   padding: 12px;
-  width: 100%;       /* 최대 너비 680px */
-  margin: 0 auto;         /* 가운데 정렬 */
+  max-width: 680px;       /* PC 최대 680px */
+  margin: 0 auto;
 }
 .result-box img {
   width: 100%;
@@ -203,12 +197,36 @@ button:not(:disabled):hover {
   color: var(--txt-300);
 }
 
-/* ────────── 반응형 ────────── */
+/* ────────── 반응형 (모바일) ────────── */
 @media (max-width: 800px) {
+  /* 1) wrapper를 세로 스택, 간격·패딩 축소 */
   .workspace {
     flex-direction: column;
+    gap: 20px;
+    padding: 16px 12px;
   }
+  /* 2) side/result 패널 모두 100% 너비 */
+  .side-panel,
   .result-panel {
-    flex: auto;
+    flex: none;
+    width: 100%;
+  }
+  /* 3) 의류 그리드 높이 제한 해제 */
+  .grid-clothes {
+    max-height: none;
+    overflow-y: visible;
+  }
+  /* 4) 인물/결과 미리보기 풀 폭 */
+  .preview-box,
+  #photoPreview,
+  .result-box {
+    max-width: none;
+    width: 100%;
+    margin: 0;
+  }
+  /* 5) 탭 간격·스크롤 여유 */
+  .tabs {
+    gap: 8px;
+    padding-bottom: 8px;
   }
 }
