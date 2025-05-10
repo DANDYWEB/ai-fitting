@@ -64,28 +64,45 @@ const imgToBase64 = u => fetch(u).then(r => r.blob()).then(b =>
 );
 
 // compress & resize person image to ≤ 800px & JPEG 0.7
+/**
+ * 최대 가로·세로 1270px, 원본 포맷 유지하여 Base64 리턴
+ * @param {File} file - input[type=file] 으로 받은 이미지 파일
+ * @returns {Promise<string>} - Base64 문자열(“data:…,XXX…” 의 “,” 뒤)
+ */
 function fileToBase64Compressed(file) {
   return new Promise(res => {
     const img = new Image();
     img.onload = () => {
-      const MAX = 800;
-      const scale = Math.min(1, MAX / Math.max(img.width, img.height));
-      const c = document.createElement("canvas");
-      c.width = img.width * scale;
-      c.height = img.height * scale;
-      c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
-      c.toBlob(blob => {
+      const MAX = 1270;
+      const origW = img.width;
+      const origH = img.height;
+      // 축소 비율 계산 (1 이하면 축소, 아니면 원본크기)
+      const scale = Math.min(1, MAX / Math.max(origW, origH));
+
+      // 캔버스에 그리기
+      const canvas = document.createElement("canvas");
+      canvas.width  = Math.round(origW * scale);
+      canvas.height = Math.round(origH * scale);
+      const ctx = canvas.getContext("2d");
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+      // 원본 MIME 타입 유지 (JPEG/WebP는 품질 파라미터 사용)
+      const mimeType = file.type || "image/jpeg";
+      const quality  = mimeType === "image/jpeg" ? 0.85 : undefined;
+
+      canvas.toBlob(blob => {
         const fr = new FileReader();
         fr.onloadend = () => {
-          // fr.result = "data:image/jpeg;base64,XXX..."
-          res(fr.result.split(',')[1]);
+          // dataURL에서 'base64,' 뒤 부분만 추출
+          res(fr.result.split(",")[1]);
         };
         fr.readAsDataURL(blob);
-      }, "image/jpeg", 0.7);
+      }, mimeType, quality);
     };
     img.src = URL.createObjectURL(file);
   });
 }
+
 
 // merge two cloth images side by side
 const loadImg = src => new Promise(r => { const i=new Image(); i.crossOrigin="anonymous"; i.onload=()=>r(i); i.src=src; });
