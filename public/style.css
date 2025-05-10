@@ -192,7 +192,7 @@ button:not(:disabled):hover {
   border: 2px dashed var(--accent);
   border-radius: var(--radius);
   padding: 12px;
-  max-width: 680px;       /* 최대 너비 680px */
+  width: 100%;       /* 최대 너비 680px */
   margin: 0 auto;         /* 가운데 정렬 */
 }
 .result-box img {
