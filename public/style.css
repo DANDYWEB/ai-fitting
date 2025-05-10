@@ -1,47 +1,263 @@
-/* 기본 색상·레이아웃 정의는 이전과 동일 */
-:root{
-  --bg-900:#0f1114;
-  --bg-800:#171a1f;
-  --bg-card:#1e2228;
-  --txt-100:#f1f3f7;
-  --txt-300:#9da3b0;
-  --accent:#00e5ff;
-  --radius:10px;
+/* ────────────────────────────────────────────────
+   기본 색상·레이아웃
+──────────────────────────────────────────────── */
+:root {
+  --bg-900: #0f1114;
+  --bg-800: #171a1f;
+  --bg-card: #1e2228;
+  --txt-100: #f1f3f7;
+  --txt-300: #9da3b0;
+  --accent: #00e5ff;
+  --radius: 10px;
 }
-*{box-sizing:border-box;margin:0;padding:0}
-body.dark{font-family:'Poppins',sans-serif;background:var(--bg-900);color:var(--txt-100);min-height:100vh;display:flex;flex-direction:column}
-header{padding:20px 32px;background:var(--bg-800);border-bottom:2px solid var(--accent);text-align:center}
-header h1{font-size:1.65rem;font-weight:600}
-header .accent{color:var(--accent)}
-.workspace{flex:1;display:flex;flex-wrap:wrap;gap:24px;padding:32px 24px}
-.side-panel{flex:1 0 340px;display:flex;flex-direction:column;gap:24px}
-.result-panel{flex:2 1 480px;display:flex;flex-direction:column}
-.card{background:var(--bg-card);padding:24px;border-radius:var(--radius);box-shadow:0 0 10px rgba(0,0,0,.35)}
-.card h2{font-size:1.1rem;font-weight:500;margin-bottom:16px;color:var(--accent)}
-.preview-box{margin-top:12px;border:2px dashed var(--accent);border-radius:var(--radius);padding:6px;text-align:center}
-#photoPreview img{width:100%;border-radius:var(--radius)}
-/* 탭 */
-.tabs{display:flex;gap:16px;margin-bottom:14px;overflow-x:auto;scrollbar-width:none}
-.tabs::-webkit-scrollbar{display:none}
-.tabs li{list-style:none;padding:6px 14px;border-radius:var(--radius);border:2px solid transparent;cursor:pointer;color:var(--txt-300);white-space:nowrap;transition:.25s}
-.tabs li.active,.tabs li:hover{color:var(--accent);border-color:var(--accent)}
-/* 그리드 */
-.grid-clothes{display:grid;grid-template-columns:repeat(auto-fill,minmax(95px,1fr));gap:12px;max-height:350px;overflow-y:auto;padding-right:4px}
-.grid-clothes::-webkit-scrollbar{width:6px}
-.grid-clothes::-webkit-scrollbar-thumb{background:var(--accent);border-radius:3px}
-.clothing-item{border:2px solid transparent;border-radius:var(--radius);overflow:hidden;cursor:pointer;transition:.25s}
-.clothing-item img{width:100%;display:block}
-.clothing-item.selected{border-color:var(--accent)}
-.clothing-item:hover{transform:scale(1.04)}
-.item-info{display:flex;flex-direction:column;align-items:center;font-size:.75rem;padding:4px 2px;background:rgba(0,0,0,.35)}
-.item-info span:last-child{color:var(--txt-300)}
-/* 버튼 */
-button{width:100%;padding:14px 0;background:var(--accent);color:#001317;font-weight:600;border:none;border-radius:var(--radius);cursor:pointer;transition:.25s;box-shadow:0 0 10px var(--accent);font-size:1rem}
-button:disabled{opacity:.35;cursor:not-allowed;box-shadow:none}
-button:not(:disabled):hover{filter:brightness(1.15)}
-/* 결과 */
-.result-box{flex:1;display:flex;align-items:center;justify-content:center;min-height:400px;border:2px dashed var(--accent);border-radius:var(--radius);padding:12px}
-.result-box img{width:100%;border-radius:var(--radius)}
-.placeholder{color:var(--txt-300)}
-footer{text-align:center;padding:12px 0 20px;font-size:.8rem;color:var(--txt-300)}
-@media(max-width:800px){.workspace{flex-direction:column}.result-panel{flex:auto}}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body.dark {
+  font-family: 'Poppins', sans-serif;
+  background: var(--bg-900);
+  color: var(--txt-100);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+header {
+  padding: 20px 32px;
+  background: var(--bg-800);
+  border-bottom: 2px solid var(--accent);
+  text-align: center;
+}
+
+header h1 {
+  font-size: 1.65rem;
+  font-weight: 600;
+}
+
+header .accent {
+  color: var(--accent);
+}
+
+.workspace {
+  flex: 1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  padding: 32px 24px;
+}
+
+.side-panel {
+  flex: 1 0 340px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+aside .card {
+  background: var(--bg-card);
+  padding: 24px;
+  border-radius: var(--radius);
+  box-shadow: 0 0 10px rgba(0,0,0,.35);
+}
+
+.result-panel {
+  flex: 2 1 480px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 카드 제목 */
+.card h2 {
+  font-size: 1.1rem;
+  font-weight: 500;
+  margin-bottom: 16px;
+  color: var(--accent);
+}
+
+/* ────────────────────────────────────────────────
+   1) 미리보기 컨테이너: 사진 업로드 & 결과 나란히
+──────────────────────────────────────────────── */
+#previewContainer {
+  display: flex;
+  justify-content: center;    /* 좌우 중앙 정렬 */
+  align-items: flex-start;    /* 상단 기준 정렬 */
+  gap: 20px;                  /* 두 영역 사이 간격 */
+  margin: 0 auto;             /* 전체 중앙 정렬 */
+  flex-wrap: wrap;            /* 좁아지면 세로 정렬 */
+}
+
+.upload-section,
+.result-section {
+  background: var(--bg-card);
+  padding: 24px;
+  border-radius: var(--radius);
+  box-shadow: 0 0 10px rgba(0,0,0,.35);
+  width: 100%;
+  max-width: 680px;           /* 미리보기 영역 최대 너비 680px */
+}
+
+.upload-section .preview-box,
+.result-section .result-box {
+  margin-top: 12px;
+  border: 2px dashed var(--accent);
+  border-radius: var(--radius);
+  padding: 12px;
+  text-align: center;
+  min-height: 200px;
+}
+
+.upload-section .preview-box img,
+.result-section .result-box img {
+  width: 100%;
+  border-radius: var(--radius);
+}
+
+.upload-section .placeholder,
+.result-section .placeholder {
+  color: var(--txt-300);
+}
+
+/* ────────────────────────────────────────────────
+   2) 탭
+──────────────────────────────────────────────── */
+.tabs {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 14px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.tabs li {
+  list-style: none;
+  padding: 6px 14px;
+  border-radius: var(--radius);
+  border: 2px solid transparent;
+  cursor: pointer;
+  color: var(--txt-300);
+  white-space: nowrap;
+  transition: .25s;
+}
+
+.tabs li.active,
+.tabs li:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+/* ────────────────────────────────────────────────
+   3) 의류 그리드 (높이 최대 600px)
+──────────────────────────────────────────────── */
+.grid-clothes {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(95px, 1fr));
+  gap: 12px;
+  margin-top: 15px;
+
+  max-height: 600px;          /* 최대 높이 600px */
+  overflow-y: auto;           /* 넘칠 때 스크롤 */
+  padding-right: 6px;         /* 스크롤바 공간 확보 */
+}
+
+.grid-clothes::-webkit-scrollbar {
+  width: 6px;
+}
+
+.grid-clothes::-webkit-scrollbar-thumb {
+  background: var(--accent);
+  border-radius: 3px;
+}
+
+.clothing-item {
+  position: relative;
+  border: 2px solid transparent;
+  border-radius: var(--radius);
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform .25s, border-color .25s;
+}
+
+.clothing-item.selected {
+  border-color: var(--accent);
+}
+
+.clothing-item:hover {
+  transform: scale(1.04);
+}
+
+.clothing-item img {
+  width: 100%;
+  display: block;
+}
+
+.item-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: .75rem;
+  padding: 4px 2px;
+  background: rgba(0,0,0,.35);
+}
+
+/* ────────────────────────────────────────────────
+   4) 버튼
+──────────────────────────────────────────────── */
+button {
+  width: 100%;
+  padding: 14px 0;
+  background: var(--accent);
+  color: #001317;
+  font-weight: 600;
+  border: none;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: .25s;
+  box-shadow: 0 0 10px var(--accent);
+  font-size: 1rem;
+}
+
+button:disabled {
+  opacity: .35;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+button:not(:disabled):hover {
+  filter: brightness(1.15);
+}
+
+/* ────────────────────────────────────────────────
+   5) 반응형: 데스크톱에서는 미리보기 가로 정렬
+──────────────────────────────────────────────── */
+@media screen and (min-width: 1024px) {
+  #previewContainer {
+    flex-wrap: nowrap;
+  }
+}
+
+/* ────────────────────────────────────────────────
+   푸터
+──────────────────────────────────────────────── */
+footer {
+  text-align: center;
+  padding: 12px 0 20px;
+  font-size: .8rem;
+  color: var(--txt-300);
+}
+
+@media(max-width:800px) {
+  .workspace {
+    flex-direction: column;
+  }
+  .result-panel {
+    flex: auto;
+  }
+}

@@ -8,16 +8,33 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body class="dark">
-  <header><h1><span class="accent">AI</span> Fitting Room</h1></header>
+  <header>
+    <h1><span class="accent">AI</span> Fitting Room</h1>
+  </header>
 
   <main class="workspace">
-    <aside class="side-panel">
-      <section class="card">
+    <!-- ① 인물 업로드와 ③ 결과 미리보기 영역 나란히 정렬 -->
+    <div id="previewContainer">
+      <!-- 인물 업로드 섹션 -->
+      <section class="card upload-section">
         <h2>① 인물 사진 업로드</h2>
         <input type="file" id="personPhoto" accept="image/*">
-        <div id="photoPreview" class="preview-box"></div>
+        <div id="photoPreview" class="preview-box">
+          <p class="placeholder">인물 사진을 올리면 여기에 미리보기가 표시됩니다.</p>
+        </div>
       </section>
 
+      <!-- 결과 미리보기 섹션 -->
+      <section class="card result-section">
+        <h2>③ 결과 미리보기</h2>
+        <div id="resultBox" class="result-box">
+          <p class="placeholder">완성 결과가 여기에 표시됩니다.</p>
+        </div>
+      </section>
+    </div>
+
+    <!-- ② 의류 선택 + Generate 버튼 -->
+    <aside class="side-panel">
       <section class="card">
         <h2>② 의류 선택</h2>
         <ul id="categoryTabs" class="tabs">
@@ -29,18 +46,13 @@
         <div id="clothingGrid" class="grid-clothes"></div>
       </section>
 
-      <button id="generateBtn" type="button">Generate Image</button>
+      <button id="generateBtn" type="button" disabled>Generate Image</button>
     </aside>
-
-    <section class="result-panel card">
-      <h2>③ 결과 미리보기</h2>
-      <div id="resultBox" class="result-box">
-        <p class="placeholder">완성 결과가 여기에 표시됩니다.</p>
-      </div>
-    </section>
   </main>
 
-  <footer><small>&copy; 2025 DandyWeb.</small></footer>
+  <footer>
+    <small>&copy; 2025 DandyWeb.</small>
+  </footer>
 
   <script type="module" src="script.js"></script>
 </body>
