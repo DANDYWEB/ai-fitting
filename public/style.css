@@ -1,5 +1,5 @@
 /* ────────────────────────────────────────────────
-   기본 색상·레이아웃
+   컬러 & 공통 리셋
 ──────────────────────────────────────────────── */
 :root {
   --bg-900: #0f1114;
@@ -13,93 +13,62 @@
 
 * {
   box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+  margin: 0; padding: 0;
 }
 
 body.dark {
   font-family: 'Poppins', sans-serif;
   background: var(--bg-900);
   color: var(--txt-100);
-  min-height: 100vh;
   display: flex;
   flex-direction: column;
+  min-height: 100vh;
 }
 
+/* 헤더 */
 header {
   padding: 20px 32px;
   background: var(--bg-800);
   border-bottom: 2px solid var(--accent);
   text-align: center;
 }
-
 header h1 {
-  font-size: 1.65rem;
-  font-weight: 600;
+  font-size: 1.65rem; font-weight: 600;
 }
+.accent { color: var(--accent); }
 
-header .accent {
-  color: var(--accent);
-}
-
+/* ────────────────────────────────────────────────
+   레이아웃: 모바일은 세로, 데스크톱은 가로
+──────────────────────────────────────────────── */
 .workspace {
-  flex: 1;
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   gap: 24px;
   padding: 32px 24px;
 }
 
-.side-panel {
-  flex: 1 0 340px;
+/* 왼쪽 컬럼: 업로드·의류·버튼 */
+.left-panel {
   display: flex;
   flex-direction: column;
   gap: 24px;
 }
 
-aside .card {
+/* 카드 공통 */
+.card {
   background: var(--bg-card);
   padding: 24px;
   border-radius: var(--radius);
-  box-shadow: 0 0 10px rgba(0,0,0,.35);
+  box-shadow: 0 0 10px rgba(0,0,0,0.35);
 }
 
-.result-panel {
-  flex: 2 1 480px;
-  display: flex;
-  flex-direction: column;
-}
-
-/* 카드 제목 */
-.card h2 {
-  font-size: 1.1rem;
-  font-weight: 500;
-  margin-bottom: 16px;
-  color: var(--accent);
-}
-
-/* ────────────────────────────────────────────────
-   1) 미리보기 컨테이너: 사진 업로드 & 결과 나란히
-──────────────────────────────────────────────── */
-#previewContainer {
-  display: flex;
-  justify-content: center;    /* 좌우 중앙 정렬 */
-  align-items: flex-start;    /* 상단 기준 정렬 */
-  gap: 20px;                  /* 두 영역 사이 간격 */
-  margin: 0 auto;             /* 전체 중앙 정렬 */
-  flex-wrap: wrap;            /* 좁아지면 세로 정렬 */
-}
-
+/* ① 업로드 섹션 */
 .upload-section,
 .result-section {
-  background: var(--bg-card);
-  padding: 24px;
-  border-radius: var(--radius);
-  box-shadow: 0 0 10px rgba(0,0,0,.35);
   width: 100%;
-  max-width: 680px;           /* 미리보기 영역 최대 너비 680px */
+  max-width: 680px;   /* 미리보기 영역 최대 너비 */
+  margin: 0 auto;
 }
-
 .upload-section .preview-box,
 .result-section .result-box {
   margin-top: 12px;
@@ -109,33 +78,26 @@ aside .card {
   text-align: center;
   min-height: 200px;
 }
-
 .upload-section .preview-box img,
 .result-section .result-box img {
   width: 100%;
   border-radius: var(--radius);
 }
-
-.upload-section .placeholder,
-.result-section .placeholder {
+.placeholder {
   color: var(--txt-300);
 }
 
-/* ────────────────────────────────────────────────
-   2) 탭
-──────────────────────────────────────────────── */
+/* ② 의류 선택 (그리드 높이 제한) */
+.clothes-section {
+  margin-top: 0;
+}
 .tabs {
   display: flex;
   gap: 16px;
-  margin-bottom: 14px;
   overflow-x: auto;
-  scrollbar-width: none;
+  margin-bottom: 14px;
 }
-
-.tabs::-webkit-scrollbar {
-  display: none;
-}
-
+.tabs::-webkit-scrollbar { display: none; }
 .tabs li {
   list-style: none;
   padding: 6px 14px;
@@ -146,36 +108,25 @@ aside .card {
   white-space: nowrap;
   transition: .25s;
 }
-
 .tabs li.active,
 .tabs li:hover {
   color: var(--accent);
   border-color: var(--accent);
 }
 
-/* ────────────────────────────────────────────────
-   3) 의류 그리드 (높이 최대 600px)
-──────────────────────────────────────────────── */
 .grid-clothes {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(95px, 1fr));
   gap: 12px;
-  margin-top: 15px;
-
-  max-height: 600px;          /* 최대 높이 600px */
-  overflow-y: auto;           /* 넘칠 때 스크롤 */
-  padding-right: 6px;         /* 스크롤바 공간 확보 */
+  max-height: 600px;        /* 최대 높이 600px */
+  overflow-y: auto;
+  padding-right: 6px;
 }
-
-.grid-clothes::-webkit-scrollbar {
-  width: 6px;
-}
-
+.grid-clothes::-webkit-scrollbar { width: 6px; }
 .grid-clothes::-webkit-scrollbar-thumb {
   background: var(--accent);
   border-radius: 3px;
 }
-
 .clothing-item {
   position: relative;
   border: 2px solid transparent;
@@ -184,32 +135,27 @@ aside .card {
   cursor: pointer;
   transition: transform .25s, border-color .25s;
 }
-
 .clothing-item.selected {
   border-color: var(--accent);
 }
-
 .clothing-item:hover {
   transform: scale(1.04);
 }
-
 .clothing-item img {
   width: 100%;
   display: block;
 }
-
 .item-info {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  background: rgba(0,0,0,0.5);
+  color: var(--txt-100);
+  padding: 4px;
   font-size: .75rem;
-  padding: 4px 2px;
-  background: rgba(0,0,0,.35);
+  text-align: center;
 }
 
-/* ────────────────────────────────────────────────
-   4) 버튼
-──────────────────────────────────────────────── */
+/* Generate 버튼 */
 button {
   width: 100%;
   padding: 14px 0;
@@ -221,31 +167,24 @@ button {
   cursor: pointer;
   transition: .25s;
   box-shadow: 0 0 10px var(--accent);
-  font-size: 1rem;
 }
-
 button:disabled {
   opacity: .35;
   cursor: not-allowed;
   box-shadow: none;
 }
-
 button:not(:disabled):hover {
   filter: brightness(1.15);
 }
 
-/* ────────────────────────────────────────────────
-   5) 반응형: 데스크톱에서는 미리보기 가로 정렬
-──────────────────────────────────────────────── */
-@media screen and (min-width: 1024px) {
-  #previewContainer {
-    flex-wrap: nowrap;
-  }
+/* ③ 결과 섹션 */
+.result-section {
+  width: 100%;
+  max-width: 680px;
+  margin: 0 auto;
 }
 
-/* ────────────────────────────────────────────────
-   푸터
-──────────────────────────────────────────────── */
+/* 푸터 */
 footer {
   text-align: center;
   padding: 12px 0 20px;
@@ -253,11 +192,19 @@ footer {
   color: var(--txt-300);
 }
 
-@media(max-width:800px) {
+/* 데스크톱에서 가로 배치 */
+@media screen and (min-width: 1024px) {
   .workspace {
-    flex-direction: column;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: center;
   }
-  .result-panel {
-    flex: auto;
+  .left-panel {
+    flex: 1;
+    max-width: 680px;
+  }
+  .result-section {
+    flex: 1;
+    max-width: 680px;
   }
 }
