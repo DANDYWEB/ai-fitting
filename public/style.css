@@ -1,60 +1,79 @@
-/* ────────────────────────────────────────────────
-   컬러 & 공통 리셋
-──────────────────────────────────────────────── */
+/* ───────────────────────────────────────────────────────
+   기본 색상·레이아웃 정의
+─────────────────────────────────────────────────────── */
 :root {
-  --bg-900: #0f1114;
-  --bg-800: #171a1f;
-  --bg-card: #1e2228;
-  --txt-100: #f1f3f7;
-  --txt-300: #9da3b0;
-  --accent: #00e5ff;
-  --radius: 10px;
+  --bg-900:   #0f1114;
+  --bg-800:   #171a1f;
+  --bg-card:  #1e2228;
+  --txt-100:  #f1f3f7;
+  --txt-300:  #9da3b0;
+  --accent:   #00e5ff;
+  --radius:   10px;
 }
 
 * {
   box-sizing: border-box;
-  margin: 0; padding: 0;
+  margin: 0;
+  padding: 0;
 }
 
 body.dark {
   font-family: 'Poppins', sans-serif;
   background: var(--bg-900);
   color: var(--txt-100);
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
 }
 
-/* 헤더 */
 header {
   padding: 20px 32px;
   background: var(--bg-800);
   border-bottom: 2px solid var(--accent);
   text-align: center;
 }
-header h1 {
-  font-size: 1.65rem; font-weight: 600;
-}
-.accent { color: var(--accent); }
 
-/* ────────────────────────────────────────────────
-   레이아웃: 모바일은 세로, 데스크톱은 가로
-──────────────────────────────────────────────── */
+header h1 {
+  font-size: 1.65rem;
+  font-weight: 600;
+}
+
+header .accent {
+  color: var(--accent);
+}
+
+/* ───────────────────────────────────────────────────────
+   메인 레이아웃
+─────────────────────────────────────────────────────── */
 .workspace {
+  flex: 1;
   display: flex;
-  flex-direction: column;
+  flex-wrap: wrap;
   gap: 24px;
   padding: 32px 24px;
 }
 
-/* 왼쪽 컬럼: 업로드·의류·버튼 */
-.left-panel {
+/* ✱ PC 화면에서 업로드 섹션 + 결과 섹션을 
+   가로(center) 정렬 */
+@media screen and (min-width: 1024px) {
+  .workspace {
+    justify-content: center;
+  }
+}
+
+.side-panel {
+  flex: 1 0 340px;
   display: flex;
   flex-direction: column;
   gap: 24px;
 }
 
-/* 카드 공통 */
+.result-panel {
+  flex: 2 1 480px;
+  display: flex;
+  flex-direction: column;
+}
+
 .card {
   background: var(--bg-card);
   padding: 24px;
@@ -62,42 +81,49 @@ header h1 {
   box-shadow: 0 0 10px rgba(0,0,0,0.35);
 }
 
-/* ① 업로드 섹션 */
-.upload-section,
-.result-section {
-  width: 100%;
-  max-width: 680px;   /* 미리보기 영역 최대 너비 */
-  margin: 0 auto;
+.card h2 {
+  font-size: 1.1rem;
+  font-weight: 500;
+  margin-bottom: 16px;
+  color: var(--accent);
 }
-.upload-section .preview-box,
-.result-section .result-box {
+
+/* ───────────────────────────────────────────────────────
+   ① 인물 사진 업로드 (프리뷰 너비 제한)
+─────────────────────────────────────────────────────── */
+.preview-box {
   margin-top: 12px;
   border: 2px dashed var(--accent);
   border-radius: var(--radius);
-  padding: 12px;
+  padding: 6px;
   text-align: center;
-  min-height: 200px;
 }
-.upload-section .preview-box img,
-.result-section .result-box img {
+
+/* 미리보기 최대 너비 680px 유지 */
+#photoPreview {
+  width: 100%;
+  max-width: 680px;
+  margin: 0 auto;
+}
+
+#photoPreview img {
   width: 100%;
   border-radius: var(--radius);
 }
-.placeholder {
-  color: var(--txt-300);
-}
 
-/* ② 의류 선택 (그리드 높이 제한) */
-.clothes-section {
-  margin-top: 0;
-}
+/* ───────────────────────────────────────────────────────
+   ② 의류 선택창 (높이 제한 600px)
+─────────────────────────────────────────────────────── */
 .tabs {
   display: flex;
   gap: 16px;
-  overflow-x: auto;
   margin-bottom: 14px;
+  overflow-x: auto;
+  scrollbar-width: none;
 }
-.tabs::-webkit-scrollbar { display: none; }
+.tabs::-webkit-scrollbar {
+  display: none;
+}
 .tabs li {
   list-style: none;
   padding: 6px 14px;
@@ -118,22 +144,30 @@ header h1 {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(95px, 1fr));
   gap: 12px;
-  max-height: 600px;        /* 최대 높이 600px */
+  margin-top: 8px;
+
+  max-height: 600px;       /* ← 높이 600px로 제한 */
   overflow-y: auto;
-  padding-right: 6px;
+  padding-right: 4px;
 }
-.grid-clothes::-webkit-scrollbar { width: 6px; }
+.grid-clothes::-webkit-scrollbar {
+  width: 6px;
+}
 .grid-clothes::-webkit-scrollbar-thumb {
   background: var(--accent);
   border-radius: 3px;
 }
+
 .clothing-item {
-  position: relative;
   border: 2px solid transparent;
   border-radius: var(--radius);
   overflow: hidden;
   cursor: pointer;
-  transition: transform .25s, border-color .25s;
+  transition: .25s;
+}
+.clothing-item img {
+  width: 100%;
+  display: block;
 }
 .clothing-item.selected {
   border-color: var(--accent);
@@ -141,21 +175,22 @@ header h1 {
 .clothing-item:hover {
   transform: scale(1.04);
 }
-.clothing-item img {
-  width: 100%;
-  display: block;
-}
+
 .item-info {
-  position: absolute;
-  bottom: 0; left: 0; right: 0;
-  background: rgba(0,0,0,0.5);
-  color: var(--txt-100);
-  padding: 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   font-size: .75rem;
-  text-align: center;
+  padding: 4px 2px;
+  background: rgba(0,0,0,0.35);
+}
+.item-info span:last-child {
+  color: var(--txt-300);
 }
 
-/* Generate 버튼 */
+/* ───────────────────────────────────────────────────────
+   버튼
+─────────────────────────────────────────────────────── */
 button {
   width: 100%;
   padding: 14px 0;
@@ -167,6 +202,7 @@ button {
   cursor: pointer;
   transition: .25s;
   box-shadow: 0 0 10px var(--accent);
+  font-size: 1rem;
 }
 button:disabled {
   opacity: .35;
@@ -177,14 +213,34 @@ button:not(:disabled):hover {
   filter: brightness(1.15);
 }
 
-/* ③ 결과 섹션 */
-.result-section {
+/* ───────────────────────────────────────────────────────
+   ③ 결과 미리보기 (최대 폭 680px 유지)
+─────────────────────────────────────────────────────── */
+.result-box {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  border: 2px dashed var(--accent);
+  border-radius: var(--radius);
+  padding: 12px;
+
   width: 100%;
-  max-width: 680px;
-  margin: 0 auto;
+  max-width: 680px;        /* ← 최대 680px */
+  margin: 0 auto;          /* 가운데 정렬 */
+}
+.result-box img {
+  width: 100%;
+  border-radius: var(--radius);
+}
+.placeholder {
+  color: var(--txt-300);
 }
 
-/* 푸터 */
+/* ───────────────────────────────────────────────────────
+   푸터
+─────────────────────────────────────────────────────── */
 footer {
   text-align: center;
   padding: 12px 0 20px;
@@ -192,19 +248,14 @@ footer {
   color: var(--txt-300);
 }
 
-/* 데스크톱에서 가로 배치 */
-@media screen and (min-width: 1024px) {
+/* ───────────────────────────────────────────────────────
+   반응형: 800px 이하 → 세로 구성
+─────────────────────────────────────────────────────── */
+@media (max-width: 800px) {
   .workspace {
-    flex-direction: row;
-    align-items: flex-start;
-    justify-content: center;
+    flex-direction: column;
   }
-  .left-panel {
-    flex: 1;
-    max-width: 680px;
-  }
-  .result-section {
-    flex: 1;
-    max-width: 680px;
+  .result-panel {
+    flex: auto;
   }
 }
