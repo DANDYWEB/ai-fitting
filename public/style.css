@@ -177,19 +177,17 @@ input[type="file"]{display:none}
 
 /* 다운로드 버튼: 결과 박스 오른쪽 위 */
 .btn-download{
-  position:absolute;
-  top:12px;
-  right:12px;
-  width:auto;
-  padding:8px 14px;
-  font-size:.85rem;
-  box-shadow:0 0 6px var(--accent);
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 10;          /* 이미지보다 위에 뜨도록 */
+  display: none;        /* 기본 숨김 */
+  width: auto;
+  padding: 8px 14px;
+  font-size: .85rem;
+  box-shadow: 0 0 6px var(--accent);
 }
 
-/* 다운로드 버튼 기본 숨김 */
-.btn-download {
-  display: none !important;
-}
 
 /* .show 클래스를 붙이면 버튼 보임 */
 .btn-download.show {
