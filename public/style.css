@@ -78,3 +78,12 @@ footer{text-align:center;padding:12px 0 20px;font-size:.8rem;color:var(--txt-300
   }
 
 }
+
+/* ─── 광고 배너 스타일 ─── */
+.ad-banner{
+  display:flex;align-items:center;justify-content:center;
+  height:100px;width:100%;margin-top:14px;
+  border:2px dashed var(--accent);border-radius:var(--radius);
+  color:var(--txt-300);font-size:.85rem
+}
+.hidden{display:none}

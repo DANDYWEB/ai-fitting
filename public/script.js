@@ -1,46 +1,38 @@
+/* ───────── 상수 & 전역 ───────── */
+const FN   = "/.netlify/functions";          // Netlify Functions base URL
+const tabs = document.getElementById("categoryTabs");
+const grid = document.getElementById("clothingGrid");
+const file = document.getElementById("personPhoto");
+const prev = document.getElementById("photoPreview");
+const btn  = document.getElementById("generateBtn");
+const box  = document.getElementById("resultBox");
+const ad   = document.getElementById("adContainer");
 
-
-
-/* ────── constants & refs ────── */
-const FN          = "/.netlify/functions";  // Netlify Functions base URL
-const ADS_CLIENT = "ca-app-pub-3940256099942544/1033173712";
-const ADS_SLOT   = "8530267376";
-
-const tabs  = document.getElementById("categoryTabs");
-const grid  = document.getElementById("clothingGrid");
-const file  = document.getElementById("personPhoto");
-const prev  = document.getElementById("photoPreview");
-const btn   = document.getElementById("generateBtn");
-const box   = document.getElementById("resultBox");
-
-let CLOTHES  = [];
+let CLOTHES = [];
 let selected = [];
-let cat      = "all";
+let cat = "all";
 
-/* ─── 1. load clothes.json ─── */
+/* ───────── 1. 의류 목록 로드 ───────── */
 fetch("/clothes.json")
   .then(r => r.json())
   .then(j => { CLOTHES = j.items || []; renderGrid(); })
   .catch(e => alert("의류 목록 로드 실패: " + e.message));
 
-/* ─── 2. render grid ─── */
+/* ───────── 2. 그리드 렌더 ───────── */
 function renderGrid() {
   grid.innerHTML = "";
-  CLOTHES
-    .filter(c => cat === "all" || c.cat === cat)
-    .forEach(c => {
-      const d = document.createElement("div");
-      d.className = "clothing-item" + (selected.includes(c.id) ? " selected" : "");
-      d.dataset.id = c.id;
-      d.innerHTML = `
-        <img src="${c.src}">
-        <div class="item-info">${c.name}</div>
-      `;
-      grid.appendChild(d);
-    });
+  CLOTHES.filter(c => cat === "all" || c.cat === cat).forEach(c => {
+    const d = document.createElement("div");
+    d.className = "clothing-item" + (selected.includes(c.id) ? " selected" : "");
+    d.dataset.id = c.id;
+    d.innerHTML =
+      `<img src="${c.src}">
+       <div class="item-info">${c.name}</div>`;
+    grid.appendChild(d);
+  });
 }
 
-/* ─── 3. category tabs & selection ─── */
+/* ───────── 3. 탭/의류 선택 ───────── */
 tabs.addEventListener("click", e => {
   const li = e.target.closest("li"); if (!li) return;
   cat = li.dataset.cat;
@@ -50,160 +42,134 @@ tabs.addEventListener("click", e => {
 grid.addEventListener("click", e => {
   const it = e.target.closest(".clothing-item"); if (!it) return;
   const id = +it.dataset.id;
-  if (selected.includes(id)) {
-    selected = selected.filter(v => v !== id);
-  } else {
+  if (selected.includes(id)) selected = selected.filter(v => v !== id);
+  else {
     if (selected.length === 2) { alert("의류는 최대 2개"); return; }
     selected.push(id);
   }
-  renderGrid();
-  updateBtn();
+  renderGrid(); updateBtn();
 });
 
-/* ─── 4. person preview ─── */
+/* ───────── 4. 인물 미리보기 ───────── */
 file.addEventListener("change", () => {
   const f = file.files[0];
   if (f) {
     const fr = new FileReader();
-    fr.onload = e => prev.innerHTML = `<img src="${e.target.result}" style="width:100%">`;
+    fr.onload = e => (prev.innerHTML = `<img src="${e.target.result}" style="width:100%">`);
     fr.readAsDataURL(f);
   }
   updateBtn();
 });
-function updateBtn() {
-  btn.disabled = !(file.files[0] && selected.length);
-}
+function updateBtn() { btn.disabled = !(file.files[0] && selected.length); }
 
-/* ─── 5. helpers ─── */
-/** fetch URL → Blob → Base64 */
-const imgToBase64 = u =>
-  fetch(u).then(r => r.blob()).then(b => new Promise(res => {
-    const fr = new FileReader();
-    fr.onloadend = () => res(fr.result.split(',')[1]);
-    fr.readAsDataURL(b);
-  }));
-
-/** compress & resize person image to ≤ 1270px, keep original format */
+/* ───────── 5. 사람 이미지 압축(≤1270px, 원본형식) ───────── */
 function fileToBase64Compressed(file) {
   return new Promise(res => {
     const img = new Image();
     img.onload = () => {
       const MAX = 1270;
-      const origW = img.width, origH = img.height;
-      const scale = Math.min(1, MAX / Math.max(origW, origH));
+      const scale = Math.min(1, MAX / Math.max(img.width, img.height));
 
-      const canvas = document.createElement("canvas");
-      canvas.width = Math.round(origW * scale);
-      canvas.height = Math.round(origH * scale);
-      const ctx = canvas.getContext("2d");
-      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      const cvs = document.createElement("canvas");
+      cvs.width  = img.width * scale;
+      cvs.height = img.height * scale;
+      cvs.getContext("2d").drawImage(img, 0, 0, cvs.width, cvs.height);
 
-      const mimeType = file.type || "image/jpeg";
-      const quality  = mimeType === "image/jpeg" ? 0.85 : undefined;
+      const mime = file.type || "image/jpeg";
+      const q    = mime === "image/jpeg" ? 0.85 : undefined;
 
-      canvas.toBlob(blob => {
+      cvs.toBlob(b => {
         const fr = new FileReader();
-        fr.onloadend = () => res(fr.result.split(',')[1]);
-        fr.readAsDataURL(blob);
-      }, mimeType, quality);
+        fr.onloadend = () => res(fr.result.split(",")[1]);
+        fr.readAsDataURL(b);
+      }, mime, q);
     };
     img.src = URL.createObjectURL(file);
   });
 }
 
-/** merge two cloth images side by side */
-const loadImg = src => new Promise(r => {
-  const i = new Image();
-  i.crossOrigin = "anonymous";
-  i.onload = () => r(i);
-  i.src = src;
-});
+/* ───────── 6. 의류 이미지 Base64 ───────── */
+const imgToB64 = u => fetch(u).then(r => r.blob()).then(b => new Promise(res=>{
+  const fr = new FileReader(); fr.onloadend = () => res(fr.result.split(",")[1]); fr.readAsDataURL(b);
+}));
+
+/* 2장 병합(JPEG 0.85) */
+const loadImg = s => new Promise(r => {const i=new Image(); i.crossOrigin="anonymous"; i.onload=()=>r(i); i.src=s;});
 async function mergeTwo(a, b) {
   const A = await loadImg(`data:image/png;base64,${a}`);
   const B = await loadImg(`data:image/png;base64,${b}`);
-  const c = document.createElement("canvas");
-  c.width  = A.width + B.width;
-  c.height = Math.max(A.height, B.height);
-  const ctx = c.getContext("2d");
-  ctx.drawImage(A, 0, 0);
-  ctx.drawImage(B, A.width, 0);
-  return c.toDataURL("image/jpeg", 0.85).split(',')[1];
+  const cvs = document.createElement("canvas");
+  cvs.width = A.width + B.width; cvs.height = Math.max(A.height, B.height);
+  const ctx = cvs.getContext("2d");
+  ctx.drawImage(A, 0, 0); ctx.drawImage(B, A.width, 0);
+  return cvs.toDataURL("image/jpeg", 0.85).split(",")[1];
 }
 
-/* ─── 6. Generate click ─── */
-btn.addEventListener("click", async () => {
-  btn.disabled    = true;
-  btn.textContent = "Generating…";
-
-  // ▶ 광고 삽입
-  box.innerHTML = `
-    <ins class="adsbygoogle"
-         style="display:block; text-align:center;"
-         data-ad-client="${ADS_CLIENT}"
-         data-ad-slot="${ADS_SLOT}"
-         data-ad-format="auto"
-         data-full-width-responsive="true"></ins>
-  `;
-  (adsbygoogle = window.adsbygoogle || []).push({});
-
-  try {
-    // ① 사람 이미지 Base64
-    const humanB64 = await fileToBase64Compressed(file.files[0]);
-
-    // ② 의류 이미지 Base64 (1~2장)
-    const clothImgs = await Promise.all(
-      selected.map(id => imgToBase64(CLOTHES.find(c => c.id === id).src))
-    );
-    const clothB64 = clothImgs.length === 2
-      ? await mergeTwo(clothImgs[0], clothImgs[1])
-      : clothImgs[0];
-
-    // ③ 클링 API 호출
-    const resp = await fetch(`${FN}/generate`, {
-      method:  "POST",
-      headers: { "Content-Type": "application/json" },
-      body:    JSON.stringify({ human_image: humanB64, cloth_image: clothB64 })
+/* ───────── 7. AdMob 배너 표시/숨김 ───────── */
+function showAd() {
+  ad.classList.remove("hidden");
+  if (window.admob?.start) {
+    admob.start().then(() => {
+      admob.Banner.show({
+        adUnitId: "ca-app-pub-3940256099942544/1033173712", // ★ 실제 배너 ID로 교체
+        position: "bottom"
+      }).catch(console.warn);
     });
-    if (!resp.ok) throw new Error("Generate 함수 에러: " + await resp.text());
+  }
+}
+function hideAd() {
+  ad.classList.add("hidden");
+  if (window.admob?.Banner?.hide) admob.Banner.hide().catch(console.warn);
+}
 
-    const j = await resp.json();
+/* ───────── 8. Generate 클릭 ───────── */
+btn.addEventListener("click", async () => {
+  btn.disabled = true; btn.textContent = "Generating…";
+  showAd();   // 광고 표시
+  try {
+    const human = await fileToBase64Compressed(file.files[0]);
+    const clothImgs = await Promise.all(selected.map(id => imgToB64(CLOTHES.find(c=>c.id===id).src)));
+    const cloth = clothImgs.length === 2 ? await mergeTwo(clothImgs[0], clothImgs[1]) : clothImgs[0];
+
+    const g = await fetch(`${FN}/generate`, {
+      method : "POST",
+      headers: { "Content-Type":"application/json" },
+      body   : JSON.stringify({ human_image:human, cloth_image:cloth })
+    });
+    if(!g.ok) throw new Error("Generate 실패: "+await g.text());
+    const j = await g.json();
     poll(j.task_id, 0);
-
-  } catch (err) {
-    alert(err.message);
-    reset();
+  } catch (e) {
+    alert(e.message); reset();
   }
 });
 
-/* ─── 7. poll 결과 ─── */
+/* ───────── 9. 결과 폴링 ───────── */
 async function poll(id, n) {
-  const res = await fetch(`${FN}/task?id=${id}`);
-  if (!res.ok) { reset("Task 조회 실패 " + res.status); return; }
+  const r = await fetch(`${FN}/task?id=${id}`);
+  if(!r.ok){ reset("Task 조회 실패 "+r.status); return; }
 
-  const d = await res.json();
-  if (!d.task_status) {
-    if (n < 40) { setTimeout(() => poll(id, n + 1), 8000); return; }
+  const d = await r.json();
+  if(!d.task_status){
+    if(n<40){ setTimeout(()=>poll(id,n+1),8000); return; }
     reset("결과를 가져오지 못했습니다"); return;
   }
 
-  if (d.task_status === "succeed") {
-    const url = d.image_url
-             || d.result_url
-             || d.task_result?.images?.[0]?.url;
-    if (!url) { reset("URL을 찾지 못했습니다"); return; }
+  if(d.task_status==="succeed"){
+    const url = d.image_url || d.result_url || d.task_result?.images?.[0]?.url;
+    if(!url){ reset("URL을 찾지 못했습니다"); return; }
     box.innerHTML = `<img src="${url}" style="width:100%">`;
+    hideAd();
     reset(); return;
   }
+  if(d.task_status==="failed"){ hideAd(); reset("생성 실패"); return; }
 
-  if (d.task_status === "failed") { reset("생성 실패"); return; }
-
-  if (n < 40) setTimeout(() => poll(id, n + 1), 8000);
-  else        reset("타임아웃");
+  if(n<40) setTimeout(()=>poll(id,n+1),8000);
+  else     { hideAd(); reset("타임아웃"); }
 }
 
-function reset(msg) {
-  if (msg) alert(msg);
-  btn.disabled    = false;
+function reset(msg){
+  if(msg) alert(msg);
+  btn.disabled = false;
   btn.textContent = "Generate Image";
-  box.innerHTML   = `<p class="placeholder">완성 결과가 여기에 표시됩니다.</p>`;
 }
