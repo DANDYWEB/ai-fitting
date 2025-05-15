@@ -24,11 +24,18 @@ const YT_IFRAME = `
     title="Generating..."
   ></iframe>`;
 
-/* ───────────────── 초기화 ───────────────── */
-// Generate 버튼 비활성화
+/* ─────────────────────── 다운로드 버튼 show/hide 헬퍼 ─────────────────────── */
+function showDownload() {
+  downloadBtn.classList.add("show");
+}
+function hideDownload() {
+  downloadBtn.classList.remove("show");
+}
+
+/* ─────────────────────────── 초기화 ─────────────────────────── */
+// 페이지 로드 직후 Generate 비활성, Download 숨김
 btn.disabled = true;
-// Download 버튼 숨기기
-downloadBtn.hidden = true;
+hideDownload();
 
 /* ──────────────────────── 1. 의류 목록 로드 ──────────────────────── */
 fetch("/clothes.json")
@@ -37,7 +44,7 @@ fetch("/clothes.json")
   .catch(e => alert("의류 목록 로드 실패: " + e.message));
 
 /* ──────────────────────── 2. 그리드 렌더 ───────────────────────── */
-function renderGrid(){
+function renderGrid() {
   grid.innerHTML = "";
   CLOTHES
     .filter(c => cat === "all" || c.cat === cat)
@@ -63,9 +70,10 @@ tabs.addEventListener("click", e => {
 grid.addEventListener("click", e => {
   const it = e.target.closest(".clothing-item"); if (!it) return;
   const id = +it.dataset.id;
-  if (selected.includes(id)) selected = selected.filter(v => v !== id);
-  else {
-    if (selected.length === 2){ alert("의류는 최대 2개"); return; }
+  if (selected.includes(id)) {
+    selected = selected.filter(v => v !== id);
+  } else {
+    if (selected.length === 2) { alert("의류는 최대 2개"); return; }
     selected.push(id);
   }
   renderGrid();
@@ -83,7 +91,7 @@ file.addEventListener("change", () => {
   updateBtn();
 });
 
-/* Generate 버튼 활성화 여부 갱신 */
+/* ──────────────────────── Generate 버튼 활성화 ─────────────────────── */
 function updateBtn() {
   btn.disabled = !(file.files[0] && selected.length);
 }
@@ -99,23 +107,23 @@ const imgToBase64 = url => fetch(url)
   }));
 
 // 최대 1270px & 원본 포맷 유지 압축
-function fileToBase64Compressed(f){
+function fileToBase64Compressed(f) {
   return new Promise(res => {
     const img = new Image();
     img.onload = () => {
       const MAX = 1270;
       const scale = Math.min(1, MAX / Math.max(img.width, img.height));
       const c = document.createElement("canvas");
-      c.width  = Math.round(img.width  * scale);
+      c.width  = Math.round(img.width * scale);
       c.height = Math.round(img.height * scale);
       c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
       const mime = f.type || "image/jpeg";
-      const q    = mime === "image/jpeg" ? 0.85 : undefined;
+      const quality = mime === "image/jpeg" ? 0.85 : undefined;
       c.toBlob(blob => {
         const fr = new FileReader();
         fr.onloadend = () => res(fr.result.split(",")[1]);
         fr.readAsDataURL(blob);
-      }, mime, q);
+      }, mime, quality);
     };
     img.src = URL.createObjectURL(f);
   });
@@ -123,43 +131,45 @@ function fileToBase64Compressed(f){
 
 // 두 의류 이미지 합치기
 const loadImg = src => new Promise(r => {
-  const i = new Image(); i.crossOrigin = "anonymous";
-  i.onload = () => r(i); i.src = src;
+  const i = new Image();
+  i.crossOrigin = "anonymous";
+  i.onload = () => r(i);
+  i.src = src;
 });
-async function mergeTwo(a,b){
+async function mergeTwo(a, b) {
   const A = await loadImg(`data:image/png;base64,${a}`);
   const B = await loadImg(`data:image/png;base64,${b}`);
   const c = document.createElement("canvas");
-  c.width = A.width + B.width; c.height = Math.max(A.height, B.height);
+  c.width = A.width + B.width;
+  c.height = Math.max(A.height, B.height);
   const ctx = c.getContext("2d");
-  ctx.drawImage(A, 0, 0); ctx.drawImage(B, A.width, 0);
-  return c.toDataURL("image/jpeg",0.85).split(",")[1];
+  ctx.drawImage(A, 0, 0);
+  ctx.drawImage(B, A.width, 0);
+  return c.toDataURL("image/jpeg", 0.85).split(",")[1];
 }
 
 /* ──────────────────────── 6. Generate 클릭 ─────────────────────── */
 btn.addEventListener("click", async () => {
-  // 버튼·다운로드 초기화
   btn.disabled = true;
   btn.textContent = "Generating…";
-  box.innerHTML      = YT_IFRAME;
-  downloadBtn.hidden = true;
+
+  box.innerHTML = YT_IFRAME;
+  hideDownload();
   lastImgUrl = "";
 
   try {
-    // 인물 + 의류 Base64 준비
-    const human = await fileToBase64Compressed(file.files[0]);
-    const clothList = await Promise.all(
-      selected.map(id => imgToBase64(CLOTHES.find(c=>c.id===id).src))
+    const human     = await fileToBase64Compressed(file.files[0]);
+    const clothImgs = await Promise.all(
+      selected.map(id => imgToBase64(CLOTHES.find(c => c.id === id).src))
     );
-    const cloth = clothList.length===2
-      ? await mergeTwo(clothList[0], clothList[1])
-      : clothList[0];
+    const cloth = clothImgs.length === 2
+      ? await mergeTwo(clothImgs[0], clothImgs[1])
+      : clothImgs[0];
 
-    // API 호출
     const resp = await fetch(`${FN}/generate`, {
-      method:      "POST",
-      headers:     { "Content-Type": "application/json" },
-      body:        JSON.stringify({ human_image:human, cloth_image:cloth })
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ human_image: human, cloth_image: cloth })
     });
     if (!resp.ok) throw new Error(await resp.text());
     const { task_id } = await resp.json();
@@ -171,51 +181,48 @@ btn.addEventListener("click", async () => {
   }
 });
 
-/* ──────────────────────── 7. Poll (3초) ─────────────────────── */
-async function poll(id,n){
+/* ──────────────────────── 7. Poll (3초 간격) ─────────────────────── */
+async function poll(id, n) {
   const r = await fetch(`${FN}/task?id=${id}`);
-  if(!r.ok){ reset("Task 조회 실패"); return; }
+  if (!r.ok) { reset("Task 조회 실패"); return; }
 
   const d = await r.json();
-  if(!d.task_status){
-    if(n<40){ setTimeout(()=>poll(id,n+1),3000); return; }
+  if (!d.task_status) {
+    if (n < 40) { setTimeout(() => poll(id, n + 1), 3000); return; }
     reset("결과를 가져오지 못했습니다"); return;
   }
-
-  if(d.task_status==="succeed"){
+  if (d.task_status === "succeed") {
     const url = d.image_url || d.result_url || d.task_result?.images?.[0]?.url;
-    if(!url){ reset("URL 없음"); return; }
+    if (!url) { reset("URL 없음"); return; }
 
     lastImgUrl = url;
     box.innerHTML = `<img src="${url}" style="width:100%;border-radius:var(--radius)">`;
 
-    // 성공 시 다운로드 버튼 노출
-    downloadBtn.href   = url;
-    downloadBtn.hidden = false;
+    downloadBtn.href = url;
+    showDownload();
 
     reset();
     return;
   }
-
-  if(d.task_status==="failed"){ reset("생성 실패"); return; }
-  if(n<40) setTimeout(()=>poll(id,n+1),3000);
+  if (d.task_status === "failed") { reset("생성 실패"); return; }
+  if (n < 40) setTimeout(() => poll(id, n + 1), 3000);
   else reset("타임아웃");
 }
 
 /* ──────────────────────── 8. reset ───────────────────────────── */
-function reset(msg){
-  if(msg) alert(msg);
-  btn.disabled        = !(file.files[0] && selected.length);
-  btn.textContent     = "Generate Image";
-  downloadBtn.hidden  = true;
+function reset(msg) {
+  if (msg) alert(msg);
+  btn.disabled = !(file.files[0] && selected.length);
+  btn.textContent = "Generate Image";
+  hideDownload();
   lastImgUrl = "";
 }
 
 /* ──────────────────────── 9. 다운로드 로직 ───────────────────── */
 downloadBtn.addEventListener("click", async () => {
-  if(!lastImgUrl) return;
+  if (!lastImgUrl) return;
   try {
-    const blob   = await fetch(lastImgUrl, { mode: "cors" }).then(r=>r.blob());
+    const blob   = await fetch(lastImgUrl, { mode: "cors" }).then(r => r.blob());
     const urlObj = URL.createObjectURL(blob);
     const a      = document.createElement("a");
     a.href       = urlObj;
@@ -225,6 +232,6 @@ downloadBtn.addEventListener("click", async () => {
     document.body.removeChild(a);
     URL.revokeObjectURL(urlObj);
   } catch (e) {
-    alert("다운로드 실패: "+e.message);
+    alert("다운로드 실패: " + e.message);
   }
 });
