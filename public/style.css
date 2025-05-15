@@ -175,17 +175,33 @@ input[type="file"]{display:none}
 .result-box iframe{width:100%;border-radius:var(--radius)}
 .placeholder{color:var(--txt-300)}
 
-/* 다운로드 버튼: 결과 박스 오른쪽 위 */
-.btn-download{
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  z-index: 10;          /* 이미지보다 위에 뜨도록 */
-  display: none;        /* 기본 숨김 */
-  width: auto;
+/* ① 결과 헤더에 Flex 적용 */
+.result-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* 다운로드 버튼 기본 hidden → inline */
+.btn-download {
+  display: inline-block;
   padding: 8px 14px;
   font-size: .85rem;
+  background: var(--accent);
+  color: #001317;
+  border-radius: var(--radius);
+  text-decoration: none;
+  font-weight: 600;
+  transition: .25s;
   box-shadow: 0 0 6px var(--accent);
+}
+.btn-download:hover {
+  filter: brightness(1.15);
+}
+
+/* hidden 어트리뷰트가 있으면 display none */
+.btn-download[hidden] {
+  display: none !important;
 }
 
 
