@@ -1,3 +1,7 @@
+/* 광고 단위 설정 */
+const ADS_CLIENT = "ca-app-pub-3940256099942544/1033173712";
+const ADS_SLOT   = "8530267376";
+
 /* ────── constants & refs ────── */
 const FN   = "/.netlify/functions";
 const tabs = document.getElementById("categoryTabs");
@@ -119,6 +123,18 @@ async function mergeTwo(a,b) {
 /* ─── 6. Generate 클릭 ─── */
 btn.addEventListener("click", async () => {
   btn.disabled = true; btn.textContent = "Generating…";
+
+  // 광고 삽입
+  box.innerHTML = `
+    <ins class="adsbygoogle"
+         style="display:block; text-align:center;"
+         data-ad-client="${ADS_CLIENT}"
+         data-ad-slot="${ADS_SLOT}"
+         data-ad-format="auto"
+         data-full-width-responsive="true"></ins>
+  `;
+  (adsbygoogle = window.adsbygoogle || []).push({});
+
   try {
     // compress person
     const humanB64 = await fileToBase64Compressed(file.files[0]);
@@ -145,6 +161,13 @@ btn.addEventListener("click", async () => {
     alert(err.message); reset();
   }
 });
+
+function reset(msg) {
+  if (msg) alert(msg);
+  btn.disabled = false;
+  btn.textContent = "Generate Image";
+  box.innerHTML = `<p class="placeholder">완성 결과가 여기에 표시됩니다.</p>`;
+}
 
 /* ─── 7. poll 결과 ─── */
 async function poll(id, n) {
