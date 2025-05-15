@@ -2,21 +2,22 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
   <title>AI Fitting Room</title>
+
+  <!-- Google AdSense 전역 스크립트 -->
+  <script async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXX"
+          crossorigin="anonymous"></script>
+
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
-
-  <!-- AdMob-plus Web SDK -->
-  <script src="https://unpkg.com/@admob-plus/web@latest/dist/index.global.js"></script>
 </head>
+
 <body class="dark">
-  <header>
-    <h1><span class="accent">AI</span> Fitting Room</h1>
-  </header>
+  <header><h1><span class="accent">AI</span> Fitting Room</h1></header>
 
   <main class="workspace">
-    <!-- 왼쪽 패널 -->
     <aside class="side-panel">
       <section class="card">
         <h2>① 인물 사진 업로드</h2>
@@ -27,7 +28,7 @@
       <section class="card">
         <h2>② 의류 선택</h2>
         <ul id="categoryTabs" class="tabs">
-          <li data-cat="all" class="active">All Items</li>
+          <li data-cat="all"  class="active">All Items</li>
           <li data-cat="top">Tops</li>
           <li data-cat="pants">Pants</li>
           <li data-cat="dress">Dress</li>
@@ -38,23 +39,29 @@
       <button id="generateBtn" type="button">Generate Image</button>
     </aside>
 
-    <!-- 결과 패널 -->
     <section class="result-panel card">
       <h2>③ 결과 미리보기</h2>
+
+      <!-- ★ 대기 중에 노출될 AdSense 슬롯 -->
+      <ins id="adBox" class="adsbygoogle"
+           style="display:none"     
+           data-ad-client="ca-app-pub-3940256099942544/1033173712"
+           data-ad-slot="8530267376"
+           data-ad-format="auto"
+           data-full-width-responsive="true"></ins>
+
       <div id="resultBox" class="result-box">
         <p class="placeholder">완성 결과가 여기에 표시됩니다.</p>
-      </div>
-
-      <!-- ▶ 광고 배너: 결과 대기 중에만 노출 ◀ -->
-      <div id="adContainer" class="ad-banner hidden">
-        <span>광고 로딩 중…</span>
       </div>
     </section>
   </main>
 
   <footer><small>&copy; 2025 DandyWeb.</small></footer>
 
-  <!-- 메인 스크립트 -->
   <script type="module" src="script.js"></script>
+  <script>
+     // AdSense 초기 1회 로드
+    (adsbygoogle = window.adsbygoogle || []).push({});
+  </script>
 </body>
 </html>
