@@ -79,5 +79,10 @@ footer{text-align:center;padding:12px 0 20px;font-size:.8rem;color:var(--txt-300
 
 }
 
-/* 광고 인라인 요소가 결과 박스와 겹치지 않도록 */
-#adBox { margin-bottom: 16px; }
+/* YouTube 아이프레임이 result-box 안에서 꽉 차도록 */
+.result-box iframe{
+  width:100%;
+  height:100%;
+  border:none;
+  border-radius:var(--radius);
+}
