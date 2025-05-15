@@ -1,4 +1,4 @@
-/* 기본 색상·레이아웃 정의는 이전과 동일 */
+/* ───────── 색상 & 공통 변수 ───────── */
 :root{
   --bg-900:#0f1114;
   --bg-800:#171a1f;
@@ -8,81 +8,184 @@
   --accent:#00e5ff;
   --radius:10px;
 }
+
+/* ───────── 리셋 & 기본 ───────── */
 *{box-sizing:border-box;margin:0;padding:0}
-body.dark{font-family:'Poppins',sans-serif;background:var(--bg-900);color:var(--txt-100);min-height:100vh;display:flex;flex-direction:column}
-header{padding:20px 32px;background:var(--bg-800);border-bottom:2px solid var(--accent);text-align:center}
-header h1{font-size:1.65rem;font-weight:600}
-header .accent{color:var(--accent)}
-.workspace{flex:1;display:flex;flex-wrap:wrap;gap:24px;padding:32px 24px}
-.side-panel{flex:1 0 340px;display:flex;flex-direction:column;gap:24px}
-.result-panel{flex:2 1 480px;display:flex;flex-direction:column}
-.card{background:var(--bg-card);padding:24px;border-radius:var(--radius);box-shadow:0 0 10px rgba(0,0,0,.35)}
-.card h2{font-size:1.1rem;font-weight:500;margin-bottom:16px;color:var(--accent)}
-.preview-box{margin-top:12px;border:2px dashed var(--accent);border-radius:var(--radius);padding:6px;text-align:center}
-#photoPreview img{width:100%;border-radius:var(--radius)}
-/* 탭 */
-.tabs{display:flex;gap:16px;margin-bottom:14px;overflow-x:auto;scrollbar-width:none}
-.tabs::-webkit-scrollbar{display:none}
-.tabs li{list-style:none;padding:6px 14px;border-radius:var(--radius);border:2px solid transparent;cursor:pointer;color:var(--txt-300);white-space:nowrap;transition:.25s}
-.tabs li.active,.tabs li:hover{color:var(--accent);border-color:var(--accent)}
-/* 그리드 */
-.grid-clothes{display:grid;grid-template-columns:repeat(auto-fill,minmax(95px,1fr));gap:12px;max-height:350px;overflow-y:auto;padding-right:4px}
-.grid-clothes::-webkit-scrollbar{width:6px}
-.grid-clothes::-webkit-scrollbar-thumb{background:var(--accent);border-radius:3px}
-.clothing-item{border:2px solid transparent;border-radius:var(--radius);overflow:hidden;cursor:pointer;transition:.25s}
-.clothing-item img{width:100%;display:block}
-.clothing-item.selected{border-color:var(--accent)}
-.clothing-item:hover{transform:scale(1.04)}
-.item-info{display:flex;flex-direction:column;align-items:center;font-size:.75rem;padding:4px 2px;background:rgba(0,0,0,.35)}
-.item-info span:last-child{color:var(--txt-300)}
-/* 버튼 */
-button{width:100%;padding:14px 0;background:var(--accent);color:#001317;font-weight:600;border:none;border-radius:var(--radius);cursor:pointer;transition:.25s;box-shadow:0 0 10px var(--accent);font-size:1rem}
-button:disabled{opacity:.35;cursor:not-allowed;box-shadow:none}
-button:not(:disabled):hover{filter:brightness(1.15)}
-/* 결과 */
-.result-box{flex:1;display:flex;align-items:center;justify-content:center;min-height:400px;border:2px dashed var(--accent);border-radius:var(--radius);padding:12px}
-.result-box img{width:100%;border-radius:var(--radius)}
-.placeholder{color:var(--txt-300)}
-footer{text-align:center;padding:12px 0 20px;font-size:.8rem;color:var(--txt-300)}
-@media(max-width:800px){.workspace{flex-direction:column}.result-panel{flex:auto}}
-
-/* 360px 이하 모바일 대응 */
-@media (max-width: 360px) {
-  /* 전체 워크스페이스 여백·간격 축소 */
-  .workspace {
-    padding: 16px 8px;
-    gap: 12px;
-  }
-
-  /* 사이드·결과 패널을 100% 너비로 변경 */
-  .side-panel,
-  .result-panel {
-    flex: 1 1 100%;
-    width: 95%;
-    margin: 0 auto;
-  }
-
-  /* 탭·그리드 영역 크기 조정 */
-  .tabs { gap: 8px; }
-  
-
-  /* 결과 박스 최소 높이 조정 */
-  .result-box {
-    min-height: 180px;
-  }
-
-  /* 버튼 여백 조정 */
-  button {
-    padding: 12px 0;
-    font-size: 0.9rem;
-  }
-
+body.dark{
+  font-family:'Poppins',sans-serif;
+  background:var(--bg-900);
+  color:var(--txt-100);
+  min-height:100vh;
+  display:flex;flex-direction:column;
 }
 
-/* YouTube 아이프레임이 result-box 안에서 꽉 차도록 */
-.result-box iframe{
-  width:100%;
-  height:100%;
-  border:none;
+/* ───────── 헤더 ───────── */
+header{
+  padding:20px 32px;
+  background:var(--bg-800);
+  border-bottom:2px solid var(--accent);
+  text-align:center;
+}
+header h1{font-size:1.65rem;font-weight:600}
+header .accent{color:var(--accent)}
+
+/* ───────── 메인 레이아웃 ───────── */
+.workspace{
+  flex:1;
+  display:flex;flex-wrap:wrap;
+  gap:24px;
+  padding:32px 24px;
+}
+.side-panel{
+  flex:0 0 300px;
+  display:flex;flex-direction:column;gap:24px;
+}
+.result-panel{flex:1 1 380px;min-width:0}
+
+/* 카드 공통 */
+.card{
+  background:var(--bg-card);
   border-radius:var(--radius);
+  padding:24px;
+  box-shadow:0 0 0 2px rgba(0,229,255,.08);
+}
+.card h2{font-size:1.05rem;color:var(--accent);margin-bottom:12px}
+
+/* ───────── 탭 ───────── */
+.tabs{display:flex;gap:8px;margin-bottom:12px;list-style:none}
+.tabs li{
+  padding:8px 14px;
+  font-size:.85rem;font-weight:600;
+  border-radius:6px;
+  cursor:pointer;
+  color:var(--txt-300);
+  transition:.25s;
+  background:rgba(255,255,255,.04);
+}
+.tabs li.active,
+.tabs li:hover{background:var(--accent);color:#002633}
+
+/* ───────── 의류 그리드 ───────── */
+.grid-clothes{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(90px,1fr));
+  gap:12px;
+}
+.clothing-item{
+  position:relative;
+  border-radius:6px;
+  overflow:hidden;
+  cursor:pointer;
+  transition:.3s;
+  outline:2px solid transparent;
+}
+.clothing-item.selected{outline:2px solid var(--accent)}
+.clothing-item img{width:100%;height:100%;object-fit:cover;display:block}
+.clothing-item .item-info{
+  position:absolute;bottom:0;left:0;width:100%;
+  font-size:.7rem;text-align:center;
+  padding:3px 0;background:rgba(0,0,0,.55);
+}
+
+/* ───────── 인물 사진 프리뷰 ───────── */
+.preview-box{
+  margin-top:12px;
+  border:2px dashed var(--bg-800);
+  border-radius:var(--radius);
+  aspect-ratio:3/4;
+  display:flex;align-items:center;justify-content:center;
+  overflow:hidden;
+  background:#16191d;
+}
+.preview-box img{width:100%;height:100%;object-fit:cover}
+
+/* ───────── 결과 박스 ───────── */
+.result-box{
+  position:relative;
+  aspect-ratio:3/4;
+  border-radius:var(--radius);
+  background:#101215;
+  overflow:hidden;
+  display:flex;align-items:center;justify-content:center;
+}
+.result-box img{width:100%;height:100%;object-fit:cover}
+.result-box .placeholder{color:var(--txt-300);font-size:.9rem;text-align:center;padding:0 8px}
+
+/* YouTube iframe (대기 영상) */
+.result-box iframe{
+  width:100%;height:100%;border:none;border-radius:var(--radius);
+}
+
+/* ───────── 버튼 공통 ───────── */
+button,
+.btn-upload{
+  width:180px;
+  padding:12px 0;
+  font:600 1rem/1 'Poppins',sans-serif;
+  border:none;border-radius:8px;
+  cursor:pointer;
+  transition:filter .3s ease;
+}
+button:hover,
+.btn-upload:hover{filter:brightness(1.08);}
+button:disabled{opacity:.45;cursor:not-allowed;}
+
+/* Generate 버튼 */
+#generateBtn{
+  align-self:flex-end;
+  background:var(--accent);
+  color:#002633;
+  box-shadow:0 0 12px rgba(0,229,255,.35);
+}
+
+/* ───────── 새 업로드(이미지 선택) 버튼 ───────── */
+input[type="file"][id="personPhoto"]{display:none;}   /* 실제 인풋 숨김 */
+.btn-upload{
+  display:inline-block;
+  margin-top:8px;
+  color:#fff;
+  background:linear-gradient(135deg,#00d0ff 0%,#ff2bd7 100%);
+  box-shadow:0 0 8px rgba(0,208,255,.65),
+             0 0 16px rgba(255,43,215,.4);
+  position:relative;
+  overflow:hidden;
+}
+.btn-upload::after{              /* 라이트 스윕 효과 */
+  content:"";
+  position:absolute;top:0;left:-150%;
+  width:50%;height:100%;
+  background:rgba(255,255,255,.35);
+  transform:skewX(-25deg);
+  transition:left .7s cubic-bezier(.4,0,.2,1);
+}
+.btn-upload:hover::after{left:130%;}
+
+/* ───────── 이미지 다운로드 버튼 ───────── */
+#dlBtn{
+  display:none;                  /* 초기 숨김, JS 로 토글 */
+  margin-top:16px;
+  background:#13161a;
+  color:var(--accent);
+  border:1px solid var(--accent);
+  box-shadow:0 0 8px rgba(0,229,255,.32);
+}
+
+/* ───────── 푸터 ───────── */
+footer{
+  text-align:center;font-size:.75rem;
+  padding:12px 0 20px;color:var(--txt-300);
+}
+
+/* ───────── 반응형 ───────── */
+@media (max-width:768px){
+  .side-panel{flex:1 1 100%;}
+  .side-panel,
+  .result-panel{max-width:none}
+}
+@media (max-width:360px){
+  .btn-upload,
+  button,
+  #dlBtn,
+  .preview-box,
+  .result-box{width:95%;}
 }

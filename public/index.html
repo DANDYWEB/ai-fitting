@@ -14,14 +14,16 @@
     <aside class="side-panel">
       <section class="card">
         <h2>① 인물 사진 업로드</h2>
-        <input type="file" id="personPhoto" accept="image/*">    
-        <div id="photoPreview" class="preview-box"></div>
+  <input type="file" id="personPhoto" accept="image/*" hidden>
+  <label for="personPhoto" class="btn-upload">이미지 선택</label>
+
+  <div id="photoPreview" class="preview-box"></div>
       </section>
 
       <section class="card">
         <h2>② 의류 선택</h2>
         <ul id="categoryTabs" class="tabs">
-          <li data-cat="all" class="active">All Items</li>
+          <li data-cat="all"   class="active">All Items</li>
           <li data-cat="top">Tops</li>
           <li data-cat="pants">Pants</li>
           <li data-cat="dress">Dress</li>
@@ -37,6 +39,9 @@
       <div id="resultBox" class="result-box">
         <p class="placeholder">완성 결과가 여기에 표시됩니다.</p>
       </div>
+
+      <!-- 새로 추가된 버튼 -->
+      <button id="dlBtn" type="button">이미지 다운로드</button>
     </section>
   </main>
 

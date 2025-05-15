@@ -1,5 +1,5 @@
 /* ───────────────── 상수 & 전역 ───────────────── */
-const FN = "/.netlify/functions";
+const FN   = "/.netlify/functions";
 
 const tabs = document.getElementById("categoryTabs");
 const grid = document.getElementById("clothingGrid");
@@ -7,21 +7,34 @@ const file = document.getElementById("personPhoto");
 const prev = document.getElementById("photoPreview");
 const btn  = document.getElementById("generateBtn");
 const box  = document.getElementById("resultBox");
+const dlBtn= document.getElementById("dlBtn");   // 새 버튼
 
 let CLOTHES = [];
 let selected = [];
-let cat = "all";
+let cat      = "all";
+let lastImgUrl = "";                            // 다운로드용 URL
 
-/* YouTube 대기 화면 (사운드 ON, 컨트롤 숨김, 무한 반복) */
-const YT_ID = "GN9zAbqRFKU";
-const YT_IFRAME = `
-  <iframe
-    src="https://www.youtube.com/embed/${YT_ID}?autoplay=1&mute=0&controls=0&loop=1&playlist=${YT_ID}&modestbranding=1&playsinline=1"
-    allow="autoplay; encrypted-media"
-    frameborder="0"
-    style="width:100%;height:100%;border-radius:var(--radius)"
-    title="Generating..."
-  ></iframe>`;
+/* 다운로드 버튼 초기 비활성 */
+dlBtn.style.display = "none";
+
+/* 다운로드 클릭 이벤트 (질문에서 주신 코드 그대로) */
+dlBtn.addEventListener("click", async ()=>{
+  if(!lastImgUrl) return;
+  try{
+    /* 이미지를 Blob 으로 가져와서 실제 파일로 저장 */
+    const blob   = await fetch(lastImgUrl,{mode:"cors"}).then(r=>r.blob());
+    const urlObj = URL.createObjectURL(blob);
+    const a      = document.createElement("a");
+    a.href       = urlObj;
+    a.download   = "ai-fitting-result.jpg";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(urlObj);
+  }catch(e){
+    alert("다운로드 실패: "+e.message);
+  }
+});
 
 /* ───────────────── 1. 의류 목록 로드 ───────────────── */
 fetch("/clothes.json")
@@ -121,6 +134,8 @@ async function mergeTwo(a,b){
 btn.addEventListener("click", async()=>{
   btn.disabled=true; btn.textContent="Generating…";
   box.innerHTML = YT_IFRAME;           // 대기 영상 표시
+  dlBtn.style.display="none";          // 이전 다운로드 버튼 숨김
+  lastImgUrl = "";
 
   try{
     const human=await fileToBase64Compressed(file.files[0]);
@@ -155,6 +170,11 @@ async function poll(id,n){
     const url=d.image_url||d.result_url||d.task_result?.images?.[0]?.url;
     if(!url){ reset("URL 없음"); return; }
     box.innerHTML=`<img src="${url}" style="width:100%;border-radius:var(--radius)">`;
+
+    /* 성공 시: 다운로드 준비 */
+    lastImgUrl = url;
+    dlBtn.style.display = "block";
+
     reset(); return;
   }
   if(d.task_status==="failed"){ reset("생성 실패"); return; }
@@ -168,4 +188,9 @@ function reset(msg){
   if(msg) alert(msg);
   btn.disabled=false;
   btn.textContent="Generate Image";
+
+  /* 다운로드 상태 초기화 */
+  if(!lastImgUrl){
+    dlBtn.style.display="none";
+  }
 }
