@@ -11,19 +11,20 @@
   <header><h1><span class="accent">AI</span> Fitting Room</h1></header>
 
   <main class="workspace">
+    <!-- ───────── Left Side ───────── -->
     <aside class="side-panel">
-      <!-- ① 인물 사진 업로드 -->
+      <!-- ① 인물 사진 -->
       <section class="card">
         <h2>① 인물 사진 업로드</h2>
 
-        <!-- 커스텀 업로드 버튼 -->
-        <label for="personPhoto" id="uploadLabel" class="btn-upload">사진 선택</label>
-        <input type="file" id="personPhoto" accept="image/*">
+        <!-- 새 디자인: label 버튼 + hidden input -->
+        <label for="personPhoto" class="file-label">사진 선택</label>
+        <input type="file" id="personPhoto" accept="image/*" hidden>
 
         <div id="photoPreview" class="preview-box"></div>
       </section>
 
-      <!-- ② 의류 선택 -->
+      <!-- ② 의류 -->
       <section class="card">
         <h2>② 의류 선택</h2>
         <ul id="categoryTabs" class="tabs">
@@ -38,20 +39,20 @@
       <button id="generateBtn" type="button">Generate Image</button>
     </aside>
 
-    <!-- ③ 결과 미리보기 -->
+    <!-- ───────── Result ───────── -->
     <section class="result-panel card">
       <h2>③ 결과 미리보기</h2>
+
       <div id="resultBox" class="result-box">
         <p class="placeholder">완성 결과가 여기에 표시됩니다.</p>
-
-        <!-- 다운­로드 버튼 (초기에는 숨김) -->
-        <a id="downloadBtn" class="btn-download" download hidden>이미지 다운로드</a>
       </div>
+
+      <!-- 다운로드 버튼 (초기 비활성) -->
+      <button id="downloadBtn" type="button" disabled>이미지 다운로드</button>
     </section>
   </main>
 
   <footer><small>&copy; 2025 DandyWeb.</small></footer>
-
   <script type="module" src="script.js"></script>
 </body>
 </html>
