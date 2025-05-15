@@ -4,49 +4,73 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AI Fitting Room</title>
+
+  <!-- 폰트 & 스타일 -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body class="dark">
-  <header><h1><span class="accent">AI</span> Fitting Room</h1></header>
+  <!-- 헤더 -->
+  <header>
+    <h1><span class="accent">AI</span> Fitting Room</h1>
+  </header>
 
+  <!-- 메인 작업 공간 -->
   <main class="workspace">
+
+    <!-- 사이드 패널 -->
     <aside class="side-panel">
+
+      <!-- ① 인물 사진 업로드 -->
       <section class="card">
         <h2>① 인물 사진 업로드</h2>
-  <input type="file" id="personPhoto" accept="image/*" hidden>
-  <label for="personPhoto" class="btn-upload">이미지 선택</label>
 
-  <div id="photoPreview" class="preview-box"></div>
+        <!-- input 숨기고 label 로 버튼 스타일링 -->
+        <label for="personPhoto" id="uploadLabel" class="btn-upload">사진 선택</label>
+        <input type="file" id="personPhoto" accept="image/*">
+
+        <div id="photoPreview" class="preview-box"></div>
       </section>
 
+      <!-- ② 의류 선택 -->
       <section class="card">
         <h2>② 의류 선택</h2>
+
+        <!-- 카테고리 탭 -->
         <ul id="categoryTabs" class="tabs">
           <li data-cat="all"   class="active">All Items</li>
           <li data-cat="top">Tops</li>
           <li data-cat="pants">Pants</li>
           <li data-cat="dress">Dress</li>
         </ul>
+
+        <!-- 의류 그리드 -->
         <div id="clothingGrid" class="grid-clothes"></div>
       </section>
 
+      <!-- Generate 버튼 -->
       <button id="generateBtn" type="button">Generate Image</button>
     </aside>
 
+    <!-- 결과 패널 -->
     <section class="result-panel card">
       <h2>③ 결과 미리보기</h2>
+
       <div id="resultBox" class="result-box">
         <p class="placeholder">완성 결과가 여기에 표시됩니다.</p>
-      </div>
 
-      <!-- 새로 추가된 버튼 -->
-      <button id="dlBtn" type="button">이미지 다운로드</button>
+        <!-- 이미지 다운로드 버튼 (초기 숨김) -->
+        <a id="downloadBtn" class="btn-download" download hidden>이미지 다운로드</a>
+      </div>
     </section>
   </main>
 
-  <footer><small>&copy; 2025 DandyWeb.</small></footer>
+  <!-- 푸터 -->
+  <footer>
+    <small>&copy; 2025 DandyWeb.</small>
+  </footer>
 
+  <!-- 메인 스크립트 -->
   <script type="module" src="script.js"></script>
 </body>
 </html>
