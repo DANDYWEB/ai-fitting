@@ -36,9 +36,48 @@ header .accent{color:var(--accent)}
 .item-info{display:flex;flex-direction:column;align-items:center;font-size:.75rem;padding:4px 2px;background:rgba(0,0,0,.35)}
 .item-info span:last-child{color:var(--txt-300)}
 /* 버튼 */
-button{width:100%;padding:14px 0;background:var(--accent);color:#001317;font-weight:600;border:none;border-radius:var(--radius);cursor:pointer;transition:.25s;box-shadow:0 0 10px var(--accent);font-size:1rem}
+button,
+.btn-upload,
+.btn-download{
+  display:inline-block;
+  width:100%;
+  padding:14px 0;
+  background:var(--accent);
+  color:#001317;
+  font-weight:600;
+  border:none;
+  border-radius:var(--radius);
+  cursor:pointer;
+  transition:.25s;
+  box-shadow:0 0 10px var(--accent);
+  font-size:1rem;
+  text-align:center;
+  text-decoration:none;
+}
 button:disabled{opacity:.35;cursor:not-allowed;box-shadow:none}
-button:not(:disabled):hover{filter:brightness(1.15)}
+button:not(:disabled):hover,
+.btn-upload:hover,
+.btn-download:hover{filter:brightness(1.15)}
+
+/* 업로드 input 숨김 */
+input[type="file"]{display:none}
+
+/* 결과 영역 위치조정 */
+.result-box{position:relative}
+.result-box iframe,
+.result-box img{width:100%;border-radius:var(--radius)}
+
+/* 다운로드 버튼을 결과 박스 오른쪽-상단 */
+.btn-download{
+  position:absolute;
+  top:12px;
+  right:12px;
+  width:auto;
+  padding:8px 14px;
+  font-size:.85rem;
+  box-shadow:0 0 6px var(--accent);
+}
+
 /* 결과 */
 .result-box{flex:1;display:flex;align-items:center;justify-content:center;min-height:400px;border:2px dashed var(--accent);border-radius:var(--radius);padding:12px}
 .result-box img{width:100%;border-radius:var(--radius)}
@@ -46,37 +85,14 @@ button:not(:disabled):hover{filter:brightness(1.15)}
 footer{text-align:center;padding:12px 0 20px;font-size:.8rem;color:var(--txt-300)}
 @media(max-width:800px){.workspace{flex-direction:column}.result-panel{flex:auto}}
 
-/* 360px 이하 모바일 대응 */
-@media (max-width: 360px) {
-  /* 전체 워크스페이스 여백·간격 축소 */
-  .workspace {
-    padding: 16px 8px;
-    gap: 12px;
-  }
-
-  /* 사이드·결과 패널을 100% 너비로 변경 */
-  .side-panel,
-  .result-panel {
-    flex: 1 1 100%;
-    width: 95%;
-    margin: 0 auto;
-  }
-
-  /* 탭·그리드 영역 크기 조정 */
-  .tabs { gap: 8px; }
-  
-
-  /* 결과 박스 최소 높이 조정 */
-  .result-box {
-    min-height: 180px;
-  }
-
-  /* 버튼 여백 조정 */
-  button {
-    padding: 12px 0;
-    font-size: 0.9rem;
-  }
-
+/* 모바일(≤360px) 대응 추가 */
+@media(max-width:360px){
+  .workspace{padding:16px 8px;gap:12px}
+  .side-panel,.result-panel{flex:1 1 100%}
+  .grid-clothes{max-height:220px}
+  .result-box{min-height:200px}
+  .btn-download{top:8px;right:8px;padding:6px 12px;font-size:.78rem}
+  .btn-upload{padding:12px 0;font-size:.9rem}
 }
 
 /* YouTube 아이프레임이 result-box 안에서 꽉 차도록 */
