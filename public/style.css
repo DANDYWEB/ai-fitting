@@ -187,7 +187,14 @@ footer{
 @media (max-width:360px){
   .workspace{padding:16px 8px; gap:12px}
   .side-panel,
-  .result-panel{flex:1 1 95%; min-width:auto}
+  .result-panel{flex:1 1 100%; min-width:auto}
+
+  /* ▶ 추가: 폭 95% · 가운데 정렬 */
+  button,
+  .file-label,
+  .result-box,
+  .preview-box{width:95%; margin:0 auto}
+
   .tabs{gap:8px}
   .grid-clothes{max-height:200px}
   .result-box{min-height:180px}
