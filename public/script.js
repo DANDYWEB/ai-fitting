@@ -150,14 +150,22 @@ async function poll(id,n){
 }
 
 /* ── 9. 이미지 다운로드 ── */
-dlBtn.addEventListener("click",()=>{
+dlBtn.addEventListener("click", async ()=>{
   if(!lastImgUrl) return;
-  const a=document.createElement("a");
-  a.href=lastImgUrl;
-  a.download="ai-fitting-result.jpg";
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
+  try{
+    /* 이미지를 Blob 으로 가져와서 실제 파일로 저장 */
+    const blob   = await fetch(lastImgUrl,{mode:"cors"}).then(r=>r.blob());
+    const urlObj = URL.createObjectURL(blob);
+    const a      = document.createElement("a");
+    a.href       = urlObj;
+    a.download   = "ai-fitting-result.jpg";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(urlObj);
+  }catch(e){
+    alert("다운로드 실패: "+e.message);
+  }
 });
 
 /* ── 10. reset ── */

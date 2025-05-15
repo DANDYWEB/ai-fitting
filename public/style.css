@@ -10,7 +10,7 @@
 }
 
 /* ───────── 리셋 ───────── */
-* { box-sizing:border-box; margin:0; padding:0 }
+*{box-sizing:border-box;margin:0;padding:0}
 
 /* ───────── 전체 레이아웃 ───────── */
 body.dark{
@@ -27,7 +27,7 @@ header{
   padding:20px 32px;
   background:var(--bg-800);
   border-bottom:2px solid var(--accent);
-  text-align:center
+  text-align:center;
 }
 header h1{font-size:1.65rem;font-weight:600}
 header .accent{color:var(--accent)}
@@ -62,8 +62,38 @@ header .accent{color:var(--accent)}
 }
 #photoPreview img{width:100%;border-radius:var(--radius)}
 
+/* ───────── 파일 업로드 라벨 (버튼과 동일 디자인) ───────── */
+.file-label,
+button{
+  display:block;
+  width:100%;
+  padding:14px 0;
+  background:var(--accent);
+  color:#001317;
+  font-weight:600;
+  border:none;
+  border-radius:var(--radius);
+  cursor:pointer;
+  transition:.25s;
+  box-shadow:0 0 10px var(--accent);
+  font-size:1rem;
+  text-align:center;
+}
+.file-label:hover,
+button:not(:disabled):hover{filter:brightness(1.15)}
+.file-label{margin-top:4px}
+
+/* ───────── 일반 버튼 상태 ───────── */
+button:disabled{opacity:.35;cursor:not-allowed;box-shadow:none}
+
 /* ───────── 탭 ───────── */
-.tabs{display:flex;gap:16px;margin-bottom:14px;overflow-x:auto;scrollbar-width:none}
+.tabs{
+  display:flex;
+  gap:16px;
+  margin-bottom:14px;
+  overflow-x:auto;
+  scrollbar-width:none;
+}
 .tabs::-webkit-scrollbar{display:none}
 .tabs li{
   list-style:none;
@@ -73,7 +103,7 @@ header .accent{color:var(--accent)}
   cursor:pointer;
   color:var(--txt-300);
   white-space:nowrap;
-  transition:.25s
+  transition:.25s;
 }
 .tabs li.active,
 .tabs li:hover{
@@ -88,7 +118,7 @@ header .accent{color:var(--accent)}
   gap:12px;
   max-height:350px;
   overflow-y:auto;
-  padding-right:4px
+  padding-right:4px;
 }
 .grid-clothes::-webkit-scrollbar{width:6px}
 .grid-clothes::-webkit-scrollbar-thumb{
@@ -115,33 +145,6 @@ header .accent{color:var(--accent)}
 }
 .item-info span:last-child{color:var(--txt-300)}
 
-/* ───────── 공통 버튼 ───────── */
-button,
-.file-label{
-  width:100%;
-  padding:14px 0;
-  background:var(--accent);
-  color:#001317;
-  font-weight:600;
-  border:none;
-  border-radius:var(--radius);
-  cursor:pointer;
-  transition:.25s;
-  box-shadow:0 0 10px var(--accent);
-  font-size:1rem;
-}
-button:disabled,
-#downloadBtn:disabled{
-  opacity:.35;
-  cursor:not-allowed;
-  box-shadow:none
-}
-button:not(:disabled):hover,
-.file-label:hover{filter:brightness(1.15)}
-
-/* 파일 선택 label 별도 간격 */
-.file-label{margin-top:4px}
-
 /* ───────── 결과 미리보기 ───────── */
 .result-box{
   flex:1;
@@ -157,15 +160,13 @@ button:not(:disabled):hover,
 .result-box iframe{
   width:100%;
   height:100%;
-  border-radius:var(--radius)
+  border-radius:var(--radius);
 }
 .placeholder{color:var(--txt-300)}
 
-/* 다운로드 버튼 추가 여백 */
+/* 다운로드 버튼 */
 #downloadBtn{
   margin-top:16px;
-  padding:12px 0;
-  font-size:1rem;
 }
 
 /* ───────── 푸터 ───────── */
@@ -173,20 +174,20 @@ footer{
   text-align:center;
   padding:12px 0 20px;
   font-size:.8rem;
-  color:var(--txt-300)
+  color:var(--txt-300);
 }
 
-/* ───────── 반응형 (800px) ───────── */
+/* ───────── 800px 이하 ───────── */
 @media (max-width:800px){
   .workspace{flex-direction:column}
   .result-panel{flex:auto}
 }
 
-/* ───────── 모바일 ≤360px 대응 ───────── */
+/* ───────── 360px 이하 ───────── */
 @media (max-width:360px){
   .workspace{padding:16px 8px; gap:12px}
   .side-panel,
-  .result-panel{flex:1 1 100%; min-width:auto}
+  .result-panel{flex:1 1 95%; min-width:auto}
   .tabs{gap:8px}
   .grid-clothes{max-height:200px}
   .result-box{min-height:180px}
