@@ -141,14 +141,14 @@ btn.addEventListener("click", async()=>{
   }catch(e){ alert(e.message); reset(); }
 });
 
-/* ───────────────── 7. Poll (간격 8초 유지) ───────────────── */
+/* ───────────────── 7. Poll (간격 3초 유지) ───────────────── */
 async function poll(id,n){
   const res=await fetch(`${FN}/task?id=${id}`);
   if(!res.ok){ reset("Task 조회 실패"); return; }
 
   const d=await res.json();
   if(!d.task_status){
-    if(n<40){setTimeout(()=>poll(id,n+1),8000);return;}
+    if(n<40){setTimeout(()=>poll(id,n+1),3000);return;}
     reset("결과를 가져오지 못했습니다"); return;
   }
   if(d.task_status==="succeed"){
@@ -159,7 +159,7 @@ async function poll(id,n){
   }
   if(d.task_status==="failed"){ reset("생성 실패"); return; }
 
-  if(n<40) setTimeout(()=>poll(id,n+1),8000);
+  if(n<40) setTimeout(()=>poll(id,n+1),3000);
   else     reset("타임아웃");
 }
 
