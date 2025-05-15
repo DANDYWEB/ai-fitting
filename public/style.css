@@ -187,7 +187,7 @@ footer{
 @media (max-width:360px){
   .workspace{padding:16px 8px; gap:12px}
   .side-panel,
-  .result-panel{flex:1 1 100%; min-width:auto}
+  .result-panel{flex:1 1 95%; min-width:0 auto}
 
   /* ▶ 추가: 폭 95% · 가운데 정렬 */
   button,
