@@ -151,10 +151,10 @@ button,
   text-align:center;
   text-decoration:none;
 }
-button:disabled{opacity:.35;cursor:not-allowed;box-shadow:none}
-button:not(:disabled):hover,
-.btn-upload:hover,
-.btn-download:hover{filter:brightness(1.15)}
+
+button:disabled, .btn-download:disabled {opacity:.35;cursor:not-allowed;box-shadow:none}
+button:not(:disabled):hover, .btn-download:not(:disabled):hover,
+.btn-upload:hover {filter:brightness(1.15)}
 
 /* 파일 input 숨김 */
 input[type="file"]{display:none}
@@ -205,13 +205,6 @@ input[type="file"]{display:none}
   filter: brightness(1.15);
 }
 
-/* downloadBtn 은 anchor<a> 이므로 [disabled] 속성에 스타일을 줍니다 */
-.btn-download[disabled] {
-  opacity: 0.35;
-  cursor: not-allowed;
-  box-shadow: none !important;
-  pointer-events: none;
-}
 
 /* ───────── 푸터 ───────── */
 footer{
