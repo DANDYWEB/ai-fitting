@@ -179,7 +179,7 @@ input[type="file"]{display:none}
 
 /* 다운로드 버튼 기본 숨김 */
 .btn-download {
-  display: block;
+  display: none;
   width: 100%;
   margin: 16px 0 0;          /* 결과 박스 아래 여백 */
   padding: 14px 0;
