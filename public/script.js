@@ -218,7 +218,7 @@ async function poll(taskId, attempt) {
 if (data.task_status === "succeed") {
   // 이미지 렌더링 코드 …
   downloadBtn.href = url;
-  downloadBtn.disabled = false;  // ★ 활성화
+  downloadBtn.removeAttribute("disabled");  // ★ 활성화
   resetState();
 }
 
