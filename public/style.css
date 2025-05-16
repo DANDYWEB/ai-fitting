@@ -186,6 +186,16 @@ input[type="file"]{display:none}
   box-shadow:0 0 6px var(--accent);
 }
 
+/* 다운로드 버튼 기본 숨김 */
+.btn-download {
+  display: inline-block !important;
+}
+
+/* .show 클래스를 붙이면 버튼 보임 */
+.btn-download.show {
+  display: inline-block !important;
+}
+
 /* ───────── 푸터 ───────── */
 footer{
   text-align:center;
