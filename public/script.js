@@ -1,44 +1,38 @@
 // public/script.js
 
 /* ─────────────────────────── 상수 & DOM ─────────────────────────── */
-const FN          = "/.netlify/functions";
-const tabs        = document.getElementById("categoryTabs");
-const grid        = document.getElementById("clothingGrid");
-const fileInput   = document.getElementById("personPhoto");
-const previewBox  = document.getElementById("photoPreview");
-const generateBtn = document.getElementById("generateBtn");
-const resultBox   = document.getElementById("resultBox");
-const downloadBtn = document.getElementById("downloadBtn");
+const FN           = "/.netlify/functions";
+const tabs         = document.getElementById("categoryTabs");
+const grid         = document.getElementById("clothingGrid");
+const fileInput    = document.getElementById("personPhoto");
+const previewBox   = document.getElementById("photoPreview");
+const generateBtn  = document.getElementById("generateBtn");
+const resultBox    = document.getElementById("resultBox");
+const downloadBtn  = document.getElementById("downloadBtn");
 
 let CLOTHES    = [];
 let selected   = [];
 let cat        = "all";
 let lastImgUrl = "";
 
-/* privacy-enhanced YouTube iframe (no cookie) */
+/* privacy-enhanced YouTube iframe (no cookie, autoplay sound, no controls, loop) */
 const YT_ID     = "GN9zAbqRFKU";
 const YT_IFRAME = `
   <iframe
-    src="https://www.youtube-nocookie.com/embed/${YT_ID}
-      ?autoplay=1
-      &mute=0
-      &controls=0
-      &loop=1
-      &playlist=${YT_ID}
-      &modestbranding=1
-      &playsinline=1"
+    src="https://www.youtube-nocookie.com/embed/${YT_ID}?autoplay=1&mute=0&controls=0&loop=1&playlist=${YT_ID}&modestbranding=1&playsinline=1"
     frameborder="0"
     allow="autoplay; encrypted-media"
     style="width:100%;height:100%;border-radius:var(--radius)"
     title="Generating…"
   ></iframe>`;
 
-/* 초기 상태 설정 */
-generateBtn.disabled = true;  // Generate 버튼 비활성화
-downloadBtn.disabled = true;  // Download 버튼 비활성화
-// (downloadBtn은 항상 보이지만, disabled로 제어)
+/* ─────────────────────── 초기 상태 ─────────────────────── */
+// Generate 버튼 비활성화
+generateBtn.disabled = true;
+// Download 버튼 비활성화 (anchor에 disabled 속성 추가)
+downloadBtn.setAttribute("disabled", "");
 
-/* ──────────────────────── 1. 의류 목록 로드 ──────────────────────── */
+/* ─────────────────────── 1. 의류 목록 로드 ─────────────────────── */
 fetch("/clothes.json")
   .then(r => r.json())
   .then(j => {
@@ -47,7 +41,7 @@ fetch("/clothes.json")
   })
   .catch(e => alert("의류 목록 로드 실패: " + e.message));
 
-/* ──────────────────────── 2. 그리드 렌더 ───────────────────────── */
+/* ─────────────────────── 2. 그리드 렌더 ─────────────────────── */
 function renderGrid() {
   grid.innerHTML = "";
   CLOTHES
@@ -63,7 +57,7 @@ function renderGrid() {
     });
 }
 
-/* ──────────────────────── 3. 탭 & 선택 ─────────────────────────── */
+/* ─────────────────────── 3. 탭 & 선택 ─────────────────────── */
 tabs.addEventListener("click", e => {
   const li = e.target.closest("li");
   if (!li) return;
@@ -89,23 +83,24 @@ grid.addEventListener("click", e => {
   updateGenerateButton();
 });
 
-/* ──────────────────────── 4. 인물 미리보기 ─────────────────────── */
+/* ─────────────────────── 4. 인물 사진 프리뷰 ─────────────────────── */
 fileInput.addEventListener("change", () => {
   const file = fileInput.files[0];
   if (file) {
     const fr = new FileReader();
-    fr.onload = e => previewBox.innerHTML = `<img src="${e.target.result}" style="width:100%">`;
+    fr.onload = e => {
+      previewBox.innerHTML = `<img src="${e.target.result}" style="width:100%">`;
+    };
     fr.readAsDataURL(file);
   }
   updateGenerateButton();
 });
 
-/* Generate 버튼 활성화 토글 */
 function updateGenerateButton() {
   generateBtn.disabled = !(fileInput.files[0] && selected.length > 0);
 }
 
-/* ──────────────────────── 5. 유틸 함수 ─────────────────────────── */
+/* ─────────────────────── 5. 유틸 함수 ─────────────────────────── */
 // URL → Base64
 const imgToBase64 = url =>
   fetch(url)
@@ -158,27 +153,25 @@ async function mergeTwo(a, b) {
   return canvas.toDataURL("image/jpeg", 0.85).split(",")[1];
 }
 
-/* ──────────────────────── 6. Generate 클릭 ─────────────────────── */
+/* ─────────────────────── 6. Generate 클릭 ─────────────────────── */
 generateBtn.addEventListener("click", async () => {
   generateBtn.disabled = true;
   generateBtn.textContent = "Generating…";
 
-  // 대기 상태: YouTube 프리뷰
+  // 대기 화면: YouTube 프리뷰
   resultBox.innerHTML = YT_IFRAME;
-  downloadBtn.disabled = true;
+  downloadBtn.setAttribute("disabled", "");
   lastImgUrl = "";
 
   try {
-    // 인물 + 의류 Base64 준비
-    const humanB64  = await fileToBase64Compressed(fileInput.files[0]);
-    const clothArr  = await Promise.all(
+    const humanB64 = await fileToBase64Compressed(fileInput.files[0]);
+    const clothArr = await Promise.all(
       selected.map(id => imgToBase64(CLOTHES.find(c => c.id === id).src))
     );
     const clothB64 = clothArr.length === 2
       ? await mergeTwo(clothArr[0], clothArr[1])
       : clothArr[0];
 
-    // API 호출
     const resp = await fetch(`${FN}/generate`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -194,9 +187,9 @@ generateBtn.addEventListener("click", async () => {
   }
 });
 
-/* ──────────────────────── 7. Poll (3초 간격) ───────────────────── */
-async function poll(id, attempt) {
-  const resp = await fetch(`${FN}/task?id=${id}`);
+/* ─────────────────────── 7. Poll (3초 간격) ───────────────────── */
+async function poll(taskId, attempt) {
+  const resp = await fetch(`${FN}/task?id=${taskId}`);
   if (!resp.ok) {
     resetState("Task 조회 실패");
     return;
@@ -205,7 +198,7 @@ async function poll(id, attempt) {
   const data = await resp.json();
   if (!data.task_status) {
     if (attempt < 40) {
-      setTimeout(() => poll(id, attempt + 1), 3000);
+      setTimeout(() => poll(taskId, attempt + 1), 3000);
     } else {
       resetState("결과를 가져오지 못했습니다");
     }
@@ -222,8 +215,7 @@ async function poll(id, attempt) {
     resultBox.innerHTML = `<img src="${url}" style="width:100%;border-radius:var(--radius)">`;
 
     // 다운로드 버튼 활성화
-    downloadBtn.href = url;
-    downloadBtn.disabled = false;
+    downloadBtn.removeAttribute("disabled");
 
     resetState();
     return;
@@ -235,22 +227,22 @@ async function poll(id, attempt) {
   }
 
   if (attempt < 40) {
-    setTimeout(() => poll(id, attempt + 1), 3000);
+    setTimeout(() => poll(taskId, attempt + 1), 3000);
   } else {
     resetState("타임아웃");
   }
 }
 
-/* ──────────────────────── 8. 상태 초기화 ───────────────────────── */
+/* ─────────────────────── 8. 상태 초기화 ───────────────────────── */
 function resetState(msg) {
   if (msg) alert(msg);
   generateBtn.disabled = !(fileInput.files[0] && selected.length > 0);
   generateBtn.textContent = "Generate Image";
-  downloadBtn.disabled = true;
+  downloadBtn.setAttribute("disabled", "");
   lastImgUrl = "";
 }
 
-/* ──────────────────────── 9. 다운로드 로직 ───────────────────── */
+/* ─────────────────────── 9. 다운로드 로직 ───────────────────── */
 downloadBtn.addEventListener("click", async () => {
   if (!lastImgUrl) return;
   try {
