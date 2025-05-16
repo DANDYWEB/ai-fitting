@@ -30,7 +30,7 @@ const YT_IFRAME = `
 // Generate 버튼 비활성화
 generateBtn.disabled = true;
 // Download 버튼 비활성화 (anchor에 disabled 속성 추가)
-downloadBtn.disabled = true;   // ★ 비활성화
+downloadBtn.setAttribute("disabled", "");   // ★ 비활성화
 
 /* ─────────────────────── 1. 의류 목록 로드 ─────────────────────── */
 fetch("/clothes.json")
@@ -243,7 +243,7 @@ function resetState(msg) {
   if(msg) alert(msg);
   generateBtn.disabled = !(fileInput.files[0] && selected.length>0);
   generateBtn.textContent = "Generate Image";
-  downloadBtn.disabled = true;   // ★ 다시 비활성화
+  downloadBtn.setAttribute("disabled", "");   // ★ 다시 비활성화
   lastImgUrl = "";
 }
 
