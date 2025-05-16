@@ -191,48 +191,43 @@ generateBtn.addEventListener("click", async () => {
 async function poll(taskId, attempt) {
   const resp = await fetch(`${FN}/task?id=${taskId}`);
   if (!resp.ok) {
-    return resetState("Task 조회 실패");
+    resetState("Task 조회 실패");
+    return;
   }
 
   const data = await resp.json();
   if (!data.task_status) {
     if (attempt < 40) {
-      return setTimeout(() => poll(taskId, attempt + 1), 3000);
+      setTimeout(() => poll(taskId, attempt + 1), 3000);
     } else {
-      return resetState("결과를 가져오지 못했습니다");
+      resetState("결과를 가져오지 못했습니다");
     }
+    return;
   }
 
   if (data.task_status === "succeed") {
-    const url =
-      data.image_url ||
-      data.result_url ||
-      data.task_result?.images?.[0]?.url;
-
-    if (!url) {
-      return resetState("URL 없음");
-    }
+    const url = data.image_url
+              || data.result_url
+              || data.task_result?.images?.[0]?.url;
+    if (!url) return resetState("URL 없음");
 
     lastImgUrl = url;
+    resultBox.innerHTML = `<img src="${url}" style="width:100%;border-radius:var(--radius)">`;
 
-    // 1) 이미지 렌더
-    resultBox.innerHTML = `
-      <img
-        src="${url}"
-        style="width:100%;border-radius:var(--radius)"
-      >`;
+// poll 성공 분기에서
+if (data.task_status === "succeed") {
+  // 이미지 렌더링 코드 …
 
-    // 2) 다운로드 버튼 활성화
-    downloadBtn.disabled = false;
+  downloadBtn.disabled = false;  // ★ 활성화
+}
 
-    // 3) Generate 버튼도 다시 활성화 (file + selection 상태에 따라)
-    updateGenerateButton();
-
-    return; // ▶ resetState() 절대 호출하지 않음
+    resetState();
+    return;
   }
 
   if (data.task_status === "failed") {
-    return resetState("생성 실패");
+    resetState("생성 실패");
+    return;
   }
 
   if (attempt < 40) {
@@ -241,7 +236,6 @@ async function poll(taskId, attempt) {
     resetState("타임아웃");
   }
 }
-
 
 /* ─────────────────────── 8. 상태 초기화 ───────────────────────── */
 function resetState(msg) {
