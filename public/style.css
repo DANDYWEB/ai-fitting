@@ -205,6 +205,13 @@ input[type="file"]{display:none}
   filter: brightness(1.15);
 }
 
+/* downloadBtn 은 anchor<a> 이므로 [disabled] 속성에 스타일을 줍니다 */
+.btn-download[disabled] {
+  opacity: 0.35;
+  cursor: not-allowed;
+  box-shadow: none !important;
+  pointer-events: none;
+}
 
 /* ───────── 푸터 ───────── */
 footer{
