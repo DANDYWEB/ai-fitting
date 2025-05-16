@@ -49,22 +49,22 @@
     </aside>
 
     <!-- 결과 패널 -->
-    <section class="result-panel card">
-      <h2>③ 결과 미리보기</h2>
+<section class="result-panel card">
+  <h2>③ 결과 미리보기</h2>
+  <div id="resultBox" class="result-box">
+    <p class="placeholder">완성 결과가 여기에 표시됩니다.</p>
+    <!-- iframe/img 만 이 DIV 안에서 바뀝니다 -->
+  </div>
 
-      <!-- 결과 박스 -->
-      <div id="resultBox" class="result-box">
-        <p class="placeholder">완성 결과가 여기에 표시됩니다.</p>
-
-        <!-- 이미지 다운로드 버튼 (초기 hidden) -->
-        <a id="downloadBtn"
-           class="btn-download"
-           href="#"
-           download="ai-fitting-result.jpg"
-           hidden
-           >이미지 다운로드</a>
-      </div>
-    </section>
+  <!-- ★ 다운로드 버튼을 결과 박스 바로 아래에 배치 -->
+  <a id="downloadBtn"
+     class="btn-download"
+     href="#"
+     download="ai-fitting-result.jpg"
+     hidden>
+    이미지 다운로드
+  </a>
+</section>
   </main>
 
   <!-- 푸터 -->

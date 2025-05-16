@@ -175,26 +175,36 @@ input[type="file"]{display:none}
 .result-box iframe{width:100%;border-radius:var(--radius)}
 .placeholder{color:var(--txt-300)}
 
-/* 다운로드 버튼: 결과 박스 오른쪽 위 */
-.btn-download{
-  position:absolute;
-  top:12px;
-  right:12px;
-  width:auto;
-  padding:8px 14px;
-  font-size:.85rem;
-  box-shadow:0 0 6px var(--accent);
-}
+/* 기존 Absolute 관련 스타일 모두 지우고, 아래만 추가하세요 */
 
 /* 다운로드 버튼 기본 숨김 */
 .btn-download {
-  display: inline-block !important;
+  display: block;
+  width: 100%;
+  margin: 16px 0 0;          /* 결과 박스 아래 여백 */
+  padding: 14px 0;
+  background: var(--accent);
+  color: #001317;
+  font-weight: 600;
+  border: none;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: .25s;
+  box-shadow: 0 0 10px var(--accent);
+  text-align: center;
+  font-size: 1rem;
+  text-decoration: none;
 }
 
-/* .show 클래스를 붙이면 버튼 보임 */
+/* 보일 때 */
 .btn-download.show {
-  display: inline-block !important;
+  display: block;
 }
+
+.btn-download:hover {
+  filter: brightness(1.15);
+}
+
 
 /* ───────── 푸터 ───────── */
 footer{
