@@ -30,7 +30,7 @@ const YT_IFRAME = `
 // Generate 버튼 비활성화
 generateBtn.disabled = true;
 // Download 버튼 비활성화 (anchor에 disabled 속성 추가)
-downloadBtn.setAttribute("disabled", "");
+downloadBtn.disabled = true;   // ★ 비활성화
 
 /* ─────────────────────── 1. 의류 목록 로드 ─────────────────────── */
 fetch("/clothes.json")
@@ -214,8 +214,13 @@ async function poll(taskId, attempt) {
     lastImgUrl = url;
     resultBox.innerHTML = `<img src="${url}" style="width:100%;border-radius:var(--radius)">`;
 
-    // 다운로드 버튼 활성화
-    downloadBtn.removeAttribute("disabled");
+// poll 성공 분기에서
+if (data.task_status === "succeed") {
+  // 이미지 렌더링 코드 …
+  downloadBtn.href = url;
+  downloadBtn.disabled = false;  // ★ 활성화
+  resetState();
+}
 
     resetState();
     return;
@@ -235,10 +240,10 @@ async function poll(taskId, attempt) {
 
 /* ─────────────────────── 8. 상태 초기화 ───────────────────────── */
 function resetState(msg) {
-  if (msg) alert(msg);
-  generateBtn.disabled = !(fileInput.files[0] && selected.length > 0);
+  if(msg) alert(msg);
+  generateBtn.disabled = !(fileInput.files[0] && selected.length>0);
   generateBtn.textContent = "Generate Image";
-  downloadBtn.setAttribute("disabled", "");
+  downloadBtn.disabled = true;   // ★ 다시 비활성화
   lastImgUrl = "";
 }
 
